@@ -67,8 +67,8 @@ Report findings under these headers:
   it, or wide enough that ordinary visitors do.
 - **Not reproduced** — probes that passed, so the reader knows what was ruled out.
 
-Quote the window as a bracket between two measurements you actually took (`3.69–4.20s`), never as a
-rounded single number. Never paint an unmeasured interval as confirmed in a chart or a claim.
+Quote the window as a bracket between two measurements you actually took (a discard at 3,687ms and a
+success at 4,199ms → `3.7–4.2s`), never as a single rounded number. Never paint an unmeasured interval as confirmed in a chart or a claim.
 
 ## Files
 

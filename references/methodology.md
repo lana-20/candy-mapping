@@ -64,8 +64,9 @@ response time. Do not over-optimise the harness before measuring where the time 
 
 ## Reporting standards
 
-Quote the window as a bracket between two clicks you actually measured — `3.69–4.20s`, not "about
-four seconds". If you draw it, the confirmed regions must end at real measurements and the untested
+Quote the window as a bracket between two clicks you actually measured. On the reference target that
+was a discard at 3,687ms and a success at 4,199ms, published as **3.7–4.2s** — the label rounds, the
+evidence behind it does not. Never "about four seconds". If you draw it, the confirmed regions must end at real measurements and the untested
 gap between them must be visually distinct (hatching works well). Painting an unmeasured interval as
 confirmed is the easiest way to lose a reader who checks.
 
