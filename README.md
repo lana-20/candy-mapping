@@ -55,7 +55,7 @@ listener never fires, the click missed the element and your locator is wrong —
 
 ## What it found
 
-On the reference target, the window is **3.69–4.20 seconds** after page load, and the boundary is
+On the reference target, the window is **3.7–4.2 seconds** after page load, and the boundary is
 sharp: a click at 3,687ms is discarded, one at 4,199ms goes through, reproducing on both sides.
 
 Across sixty benchmark runs the same eight steps were driven two ways:
@@ -93,5 +93,6 @@ index.html                the article this came out of
 
 ## Credit
 
-The sandbox is [Paul Grossman's](https://candymapper.com/), and the speed grid reproduced in the
-article is his work. Thanks for building something genuinely worth breaking tools against.
+The [sandbox](https://candymapper.com/) is [Paul Grossman's](https://www.linkedin.com/in/pmgrossman/),
+and the speed grid reproduced in the article is his work. Thanks for building something genuinely
+worth breaking tools against.
