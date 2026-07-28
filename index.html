@@ -470,15 +470,13 @@ click 'button[data-aid="CONTACT_SUBMIT_BUTTON_REND"]'</pre>
     repeatedly, varying only how long I waited before clicking Submit, and recorded whether the submission landed:
   </p>
 
-  <pre>click at t+2788ms  after load → <span class="r">SWALLOWED</span>
-click at t+2866ms  after load → <span class="r">SWALLOWED</span>
-click at t+2869ms  after load → <span class="r">SWALLOWED</span>
-click at t+3687ms  after load → <span class="r">SWALLOWED</span>
-click at t+3688ms  after load → <span class="r">SWALLOWED</span>
-click at t+4199ms  after load → <span class="g">worked</span>
-click at t+4268ms  after load → <span class="g">worked</span>
-click at t+7200ms  after load → <span class="g">worked</span>
-click at t+11858ms after load → <span class="g">worked</span>
+  <pre>click at t+2788ms after load → <span class="r">SWALLOWED</span>
+click at t+2866ms after load → <span class="r">SWALLOWED</span>
+click at t+3687ms after load → <span class="r">SWALLOWED</span>
+click at t+3688ms after load → <span class="r">SWALLOWED</span>
+click at t+4199ms after load → <span class="g">worked</span>
+click at t+4268ms after load → <span class="g">worked</span>
+click at t+7200ms after load → <span class="g">worked</span>
 click at t+22364ms after load → <span class="g">worked</span></pre>
 
 <figure class="tlfig">
@@ -570,7 +568,7 @@ click at t+22364ms after load → <span class="g">worked</span></pre>
   </figure>
 
   <p>
-    The boundary sits between <strong>3.69 and 4.20 seconds after page load</strong>, and it is sharp — 3,687ms is
+    The boundary sits between <strong>3.7 and 4.2 seconds after page load</strong>, and it is sharp — 3,687ms is
     discarded, 4,199ms goes through, and it reproduces on both sides. Click Submit inside that window and the page
     eats it. Click after, and everything works exactly as designed.
   </p>
