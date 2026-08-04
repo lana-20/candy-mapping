@@ -161,7 +161,6 @@ resumable, one JSON per run under `data/runs/{cli,mcp}/`.
 | result | 49 SWALLOWED / 1 precondition_failed / 0 worked | 50/50 worked |
 | arrival time | min 4,430ms · max 5,042ms · median 4,684ms · mean 4,701ms (stdev 129ms) | min 17,480ms · max 28,881ms · median 21,330ms · mean 21,856ms (stdev 2,401ms) |
 | negative path confirmed (`validation_confirmed`) | 0/50 | 50/50 |
-| real cost | $0 (no model) | $11.71 |
 
 **Arrival gap, recomputed:** 21,330 / 4,684 ≈ **4.6×** (medians) — down from the original
 25× (25s / 1s). Not a contradiction: the original figure compared a first-pass ~1s CLI

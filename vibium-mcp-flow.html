@@ -40,7 +40,7 @@ h1 { font-size: clamp(26px,4vw,38px); line-height:1.08; letter-spacing:-.02em; f
 .stage b { font-size:14.5px; }
 .stage p { margin:4px 0 0; font-size:13.5px; color:var(--ink3); line-height:1.45; }
 code { font-family:var(--mono); font-size:.9em; background:var(--sunk); padding:1px 5px; border-radius:4px; color:var(--ink2); }
-.factrow { display:grid; grid-template-columns: repeat(3,1fr); gap:14px; }
+.factrow { display:grid; grid-template-columns: repeat(2,1fr); gap:14px; }
 @media (max-width:720px) { .factrow { grid-template-columns: 1fr; } }
 .fact { background:var(--sunk); border-radius:8px; padding:14px 16px; }
 .fact .k { font-family:var(--mono); font-size:20px; font-weight:700; color:var(--accent2); }
@@ -154,9 +154,6 @@ sequenceDiagram
       <div class="fact"><div class="k">17.5–28.9s</div>
         <div class="l">arrival time at the real submit click, hardened across 50 real runs
           (2026-08-04) — vs. the CLI arm's 4.4–5.0s for the identical 8-step task.</div></div>
-      <div class="fact"><div class="k">$11.71</div>
-        <div class="l">total real cost across all 50 runs (~$0.23/run), claude-sonnet-5, well
-          under the $0.50/run budget cap this project's harness set.</div></div>
       <div class="fact"><div class="k">50/50</div>
         <div class="l">runs where the negative-path assertion (step 6, the validation-error
           check) actually confirmed — vs. 0/50 for the CLI arm, whose own precondition check

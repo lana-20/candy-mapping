@@ -26,7 +26,7 @@
              "validation_confirmed": 0},
     "mcp":  {"label": "Agent-driven MCP", "n": 50, "swallowed": 0, "worked": 50,
              "arrival_ms": {"min": 17480, "max": 28881, "median": 21330, "mean": 21856},
-             "validation_confirmed": 50, "cost_usd": 11.71}
+             "validation_confirmed": 50}
   },
   "attribute": {
     "click1": {"listener": 1, "network": [], "message": false},

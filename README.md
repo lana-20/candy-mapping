@@ -10,6 +10,19 @@ tooling, and measures the exact window in which the page is vulnerable.
 
 Named for the [CandyMapper](https://candymapper.com/) sandbox where the method was worked out.
 
+## Read it online
+
+All live at **[lana-20.github.io/candy-mapping](https://lana-20.github.io/candy-mapping/)**:
+
+| Page | What it is |
+|---|---|
+| [The article](https://lana-20.github.io/candy-mapping/) (`index.html`) | The full write-up — the original July 27 hunt plus the 2026-08-04 hardening update |
+| [What a CLI call does underneath](https://lana-20.github.io/candy-mapping/vibium-cli-flow.html) (`vibium-cli-flow.html`) | Sequence diagram: bash → daemon → Chrome → page, and back |
+| [What an MCP tool call does underneath](https://lana-20.github.io/candy-mapping/vibium-mcp-flow.html) (`vibium-mcp-flow.html`) | Companion diagram: agent reasoning → MCP server → the same daemon/browser path |
+| [The 8-step test case, command by command](https://lana-20.github.io/candy-mapping/vibium-test-case-commands.html) (`vibium-test-case-commands.html`) | Every canonical step, the real CLI command and the real MCP tool call, side by side |
+| [PNSQC 2026 poster — web companion](https://lana-20.github.io/candy-mapping/pnsqc-poster/assets/poster.html) (`pnsqc-poster/assets/poster.html`) | Interactive companion to the separate PNSQC poster submission built from this project |
+| [PNSQC 2026 poster — A0 print board](https://lana-20.github.io/candy-mapping/pnsqc-poster/assets/poster-board.html) (`pnsqc-poster/assets/poster-board.html`) | Print-ready version, 841×1189mm at 1:1 |
+
 ## Install
 
 ```sh
@@ -77,15 +90,10 @@ browser autofills the form. The arrival-time *gap* shrank under harder replicati
 hardened medians ~4.6×) even as the finding itself held — see
 [`references/test-case.md`](references/test-case.md) for the exact 8-step sequence both arms now
 run, and [`references/timing-methodology.md`](references/timing-methodology.md) for the full
-hardened numbers, cost ($11.71, MCP arm), and two harness bugs the hardening pass caught along the
+hardened numbers, and two harness bugs the hardening pass caught along the
 way.
 
-The full write-up is [`index.html`](index.html) — read it at
-**[lana-20.github.io/candy-mapping](https://lana-20.github.io/candy-mapping/)**. Companion
-diagrams tracing what a CLI call and an MCP tool call actually do underneath:
-[`vibium-cli-flow.html`](vibium-cli-flow.html) /
-[`vibium-mcp-flow.html`](vibium-mcp-flow.html) — and the real command issued at each of the
-8 canonical steps, side by side: [`vibium-test-case-commands.html`](vibium-test-case-commands.html).
+See **[Read it online](#read-it-online)** above for the full write-up and the companion diagrams.
 
 ## Safety
 
@@ -113,6 +121,11 @@ data/runs/                        raw per-run JSON + transcripts from the harden
 index.html                        the article this came out of
 vibium-cli-flow.html              diagram: what a CLI call does underneath
 vibium-mcp-flow.html              diagram: what an MCP tool call does underneath
+vibium-test-case-commands.html    the 8 steps, real CLI command vs real MCP tool call
+pnsqc-poster/                     separate PNSQC 2026 poster submission built from this project
+  PNSQC-PROPOSAL.md               title, abstract, bio
+  assets/poster.html              web companion (interactive, light/dark)
+  assets/poster-board.html        A0 print board
 ```
 
 ## Credit

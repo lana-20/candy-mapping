@@ -7,10 +7,9 @@
 **Perk:** 50% off registration for accepted poster authors
 **Contact:** program committee, pnsqc.org/conference/2026/poster/
 
-This is a **second, independent** submission alongside the Vibium AX poster
-(`~/pnsqc-2026-poster`) — different AUT, different finding, different argument. Same
-author, same tool family (Vibium), deliberately not merged into one poster. Confirm PNSQC
-allows multiple submissions from one author before finalizing both.
+This is the **sole PNSQC 2026 submission** — the sibling Vibium AX poster
+(`~/pnsqc-2026-poster`) was archived 2026-08-04 in favor of this one, so the question of
+whether PNSQC allows multiple submissions from one author no longer applies.
 
 ---
 
@@ -52,9 +51,15 @@ more in the same 2026-08-04 session: 3,941→4,252ms after ~45 minutes, 4,095→
 session, not just session to session, modestly and repeatably — a finding as worth
 presenting as the original race itself.
 
-**Positioning.** Vibium is presented purely as open source, no commercial framing —
-consistent with the sibling poster's rules. The live demo is the two-minute repro: cold
-cache, fill two required fields, click Submit under four seconds, watch the network.
+**Positioning rules for the poster and the easel demo.** Vibium is presented purely as an
+open-source project. No call to action, no download prompt, no commercial framing, no
+comparison-shopping against other tools. The demo should be warm and easy to walk up to —
+the two-minute repro: cold cache, fill two required fields, click Submit under four
+seconds, watch the network, let people ask questions. The findings are reported warts and
+all, including the corrected drift claim (the first version overstated it, on a single
+click, before a proper re-bisection) and the CLI's own negative-path miss (0/50); that
+honesty is the invitation. Anyone curious can re-run the whole thing from the published
+scripts, which is the only "next step" the poster offers.
 
 ---
 
@@ -68,11 +73,10 @@ Alternates:
 - The Click That Never Lands: Measuring a Startup Race Invisible to Careful Testers
 - The Boundary Moved and the Finding Didn't: Hardening a Startup Race to n=100
 
-Ties to the 2026 theme **"Quality in the Age of Autonomy"** from the other side of the
-question the Vibium AX poster asks: that poster asks whether an autonomous tester's
-*judgment* is reliable; this one asks whether an autonomous tester's *pace* determines
-what it can perceive at all — deliberation, usually framed as safer testing, here erases
-an entire defect class.
+Ties to the 2026 theme **"Quality in the Age of Autonomy"**: most of the conversation
+around autonomous testers asks whether their *judgment* is reliable; this poster asks
+whether their *pace* determines what they can perceive at all — deliberation, usually
+framed as safer testing, here erases an entire defect class.
 
 ---
 
@@ -156,16 +160,19 @@ Screenshot-verified in-browser 2026-08-04.
 
 ## Before submitting — open items
 
-- [ ] Confirm PNSQC's policy on multiple poster submissions from one author.
-- [ ] Verify attribution wording for CandyMapper / Paul Grossman before printing — credit
-      him for the sandbox and the published speed grid; do not imply endorsement.
-- [ ] Decide whether to reference the sibling Vibium AX poster from this one (shared
-      author, shared tool) or keep them fully independent at the easel.
+- [x] Moot — the sibling Vibium AX poster was archived 2026-08-04; this is now the only
+      PNSQC 2026 submission from this author.
+- [x] Verified attribution wording for CandyMapper / Paul Grossman — every mention credits
+      him for the sandbox and separately for the published speed grid, in factual past
+      tense ("built," "published," "his work"), with no phrase implying endorsement,
+      collaboration, or review of this project's findings.
+- [x] Moot — the sibling poster is archived, not being presented, so there's nothing to
+      reference at the easel.
 - [x] Re-verify the 3.7–4.2s window and the 30/30 vs 0/30 split — done 2026-08-04, at
       n=50/50 with the full canonical journey: 49/50 CLI, 50/50 MCP, boundary confirmed
       to drift within a session (not a fixed 3.7–4.2s). See `references/timing-methodology.md`
       and `references/test-case.md` in the main `candy-mapping` repo for full method.
-- [ ] Bio is copied verbatim from the sibling poster; update once, keep both in sync if
-      it changes.
-- [ ] Decide whether the hardening's real cost ($11.71, MCP arm) belongs in the poster's
-      disclosure section or only in this proposal doc.
+- [x] Moot — bio originated from the sibling poster, but that poster is archived and not
+      being submitted, so there's nothing left to keep in sync.
+- [x] Decided not to disclose or track the hardening's real run cost anywhere published —
+      it's an artifact of this account's usage, not a property of the finding.
