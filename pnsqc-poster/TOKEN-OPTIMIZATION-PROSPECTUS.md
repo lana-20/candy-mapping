@@ -34,8 +34,8 @@ command) cuts marginal per-call cost by ~50–100× once warm, in a real measure
 window on 69/70 hardened runs; making it faster only pushes it further inside a
 window it already reaches.
 
-**MCP side:** reasoning turns, not the browser or daemon, is the bottleneck — both
-arms pay the same ~170–250ms per real action. Hand-rolling batched
+**MCP side, per call:** reasoning turns, not the browser or daemon, is the
+bottleneck — both arms pay the same ~170–250ms per real action. Hand-rolling batched
 `browser_evaluate` calls (collapsing several steps into one JS blob) measured a real
 ~1.4× speedup (n=20 real runs) but **produced a real correctness bug**: a "verify the
 click happened" field that turned out to be a hardcoded `true` literal, not a real
@@ -45,6 +45,16 @@ the *fixed*, verified version of batching only gets MCP arrival to ~15s — stil
 while keeping each downstream tool call individually real and verified looks like a
 more promising architecture than hand-rolled JS, but is completely untested against
 Vibium specifically.
+
+**MCP side, static (just having 85 tools connected):** turns out to be a
+non-problem. Real measurement (confirmed twice): Vibium's full MCP tool surface
+costs only ~1,353 tokens to have connected — 82% less than a naive raw-JSON estimate
+(~7,549 tokens). This directly undercuts half of callmux's own pitch (schema
+compression / "40+ tools bloating the system prompt") for Vibium specifically,
+without touching its other half (batching per-call turns, still real and large).
+**A genuinely interesting nuance for the pitch below:** the two "token optimization"
+stories for MCP are not the same story, and the more dramatic-sounding one (schema
+bloat) turned out to be the one that wasn't real here.
 
 ## The actual prospectus: what would be worth pitching, if this became real work
 
@@ -61,18 +71,20 @@ Vibium specifically.
    restating that caveat is mandatory anywhere this surfaces, including here.
 3. **What's missing before this is even pitch-ready:** the callmux avenue is
    completely unverified against Vibium; the hand-rolled-batching numbers are real
-   but small-sample (n=20, not n≥50 the way the main finding was hardened); there is
-   no cost/token accounting comparable to the arrival-time numbers (this
-   investigation measured *time*, not *tokens* — a real gap for a "token
-   optimization" pitch specifically, since token counts were never pulled from the
-   transcripts).
+   but small-sample (n=20, not n≥50 the way the main finding was hardened); token
+   accounting exists now for the *static* schema-connection cost (~1,353 tokens,
+   real measurement) but still not for the *per-call* cost across a full batched
+   journey — the arrival-time numbers (~1.4× speedup) have no token-count
+   counterpart yet, which is the more relevant number for a "token optimization"
+   pitch specifically.
 
 ## If this gets picked up
 
-Start at `~/.claude/skills/vibium-efficiency/SKILL.md`. Do not copy its content back
-into this file or into `PNSQC-PROPOSAL.md` — extend the skill, then decide separately
-and deliberately whether a compressed version belongs in a submission, per the
-account's standing "no public-facing files touched without being asked" rule that
-governed the entire underlying investigation.
+Start at `github.com/lana-20/vibium-efficiency` (private repo — the source of truth;
+`~/.claude/skills/vibium-efficiency/` is a synced read copy, don't edit it directly).
+Do not copy its content back into this file or into `PNSQC-PROPOSAL.md` — extend the
+skill, then decide separately and deliberately whether a compressed version belongs
+in a submission, per the account's standing "no public-facing files touched without
+being asked" rule that governed the entire underlying investigation.
 
 No next action yet.
