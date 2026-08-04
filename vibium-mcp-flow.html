@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Sequence diagram tracing an MCP-driven vibium tool call from agent reasoning through the daemon, Chrome process, and back — built from live transcript parsing.">
+<title>What happens when a vibium MCP tool call is sent</title>
+<style>
+:root {
+  --ground:#FBFBF9; --panel:#FFFFFF; --sunk:#F3F4F0;
+  --ink:#141615; --ink2:#3C413B; --ink3:#6A706A;
+  --rule:#DCDFD7; --rule2:#C3C7BC;
+  --accent:#4a3aa7; --accent2:#eb6834; --good:#1a7a4c; --bad:#c23b3b;
+  --sans: ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono: ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --ground:#15171A; --panel:#1B1E22; --sunk:#20242A; --ink:#EDEFEA; --ink2:#C7CBC4;
+          --ink3:#8B9089; --rule:#33383E; --rule2:#454B52; --accent:#9585e0; --accent2:#f0956a; --good:#4fbf8b; --bad:#e07a7a; }
+}
+:root[data-theme="dark"] { --ground:#15171A; --panel:#1B1E22; --sunk:#20242A; --ink:#EDEFEA; --ink2:#C7CBC4;
+  --ink3:#8B9089; --rule:#33383E; --rule2:#454B52; --accent:#9585e0; --accent2:#f0956a; --good:#4fbf8b; --bad:#e07a7a; }
+:root[data-theme="light"] { --ground:#FBFBF9; --panel:#FFFFFF; --sunk:#F3F4F0; --ink:#141615; --ink2:#3C413B;
+  --ink3:#6A706A; --rule:#DCDFD7; --rule2:#C3C7BC; --accent:#4a3aa7; --accent2:#eb6834; --good:#1a7a4c; --bad:#c23b3b; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.5; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 40px 22px 80px; }
+.kick { font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent2); font-weight:700; }
+h1 { font-size: clamp(26px,4vw,38px); line-height:1.08; letter-spacing:-.02em; font-weight:800; margin:10px 0 10px; }
+.sub { font-size:16px; color:var(--ink3); max-width: 660px; margin: 0 0 28px; }
+.panel { background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:22px 24px; margin-bottom:20px; overflow-x:auto; }
+.panel.sunk { background:var(--sunk); }
+.eyebrow { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink3); font-weight:600; margin-bottom:10px; }
+.mermaid { background: var(--panel); display:flex; justify-content:center; }
+.stagegrid { display:grid; grid-template-columns: 28px 1fr; gap:4px 14px; }
+.stagenum { font-family:var(--mono); font-size:12px; font-weight:700; color:var(--accent2);
+  border:1px solid var(--rule2); border-radius:50%; width:24px; height:24px; display:grid; place-items:center; }
+.stage { padding: 6px 0 16px; border-bottom:1px solid var(--rule); margin-bottom:10px; }
+.stage:last-child { border-bottom:0; margin-bottom:0; }
+.stage b { font-size:14.5px; }
+.stage p { margin:4px 0 0; font-size:13.5px; color:var(--ink3); line-height:1.45; }
+code { font-family:var(--mono); font-size:.9em; background:var(--sunk); padding:1px 5px; border-radius:4px; color:var(--ink2); }
+.factrow { display:grid; grid-template-columns: repeat(3,1fr); gap:14px; }
+@media (max-width:720px) { .factrow { grid-template-columns: 1fr; } }
+.fact { background:var(--sunk); border-radius:8px; padding:14px 16px; }
+.fact .k { font-family:var(--mono); font-size:20px; font-weight:700; color:var(--accent2); }
+.fact .l { font-size:12.5px; color:var(--ink3); margin-top:4px; line-height:1.4; }
+.themebtn { position:fixed; top:14px; right:14px; z-index:10; font-family:var(--mono); font-size:11px;
+  padding:6px 10px; border-radius:6px; border:1px solid var(--rule2); background:var(--panel); color:var(--ink2); cursor:pointer; }
+.nav { font-family:var(--mono); font-size:12.5px; margin-bottom:22px; }
+.nav a { color: var(--ink3); text-decoration: none; border-bottom: 1px solid var(--rule2); }
+footer { margin-top:30px; border-top:2px solid var(--ink); padding-top:16px; font-size:12.5px; color:var(--ink3); }
+footer a { color: var(--ink2); }
+</style>
+</head>
+<body>
+
+<button class="themebtn" id="themeBtn">theme</button>
+
+<div class="wrap">
+  <p class="nav"><a href="vibium-cli-flow.html">&larr; CLI call flow</a></p>
+  <p class="kick">vibium internals</p>
+  <h1>What happens when a vibium MCP tool call is sent</h1>
+  <p class="sub">Companion to <a href="vibium-cli-flow.html">the CLI version</a> — same
+    underlying daemon and browser layer, one extra process and a full model reasoning turn
+    added on top. Traced from this project's own <code>journey_mcp.py</code> harness
+    (2026-08-04): direct transcript parsing of real agent-driven runs, not documentation.</p>
+
+  <div class="panel">
+    <p class="eyebrow">The path, one tool call</p>
+    <pre class="mermaid">
+sequenceDiagram
+    participant A as Claude agent (LLM)
+    participant M as vibium MCP server<br/>(long-lived for the session)
+    participant D as vibium daemon
+    participant X as Chrome for Testing
+    participant P as Page (live site)
+
+    Note over A: reasons about what to do next —<br/>a real model inference call
+    A->>M: mcp__vibium__browser_click<br/>(JSON-RPC over stdio)
+    activate M
+    Note over M: NOT spawned per call —<br/>one process for the whole agent session
+    M->>D: connect via Unix socket<br/>(same socket the CLI uses)
+    activate D
+    alt no browser session yet
+        D->>X: spawn Chrome, fresh temp<br/>--user-data-dir profile
+        activate X
+    end
+    D->>X: forward command over BiDi<br/>(WebSocket)
+    X->>P: dispatch the actual action<br/>(click / eval / navigate)
+    P-->>X: DOM state / JS return value
+    X-->>D: BiDi response
+    D-->>M: Unix socket response
+    deactivate D
+    M-->>A: JSON-RPC tool_result
+    deactivate M
+    Note over A: reads the result, decides the<br/>next tool call — repeats per step
+    </pre>
+  </div>
+
+  <div class="panel sunk">
+    <p class="eyebrow">Stage by stage</p>
+    <div class="stagegrid">
+      <div class="stagenum">1</div>
+      <div class="stage"><b>The agent's own reasoning is a real, timed step — not free.</b>
+        <p>Before every tool call the model decides what to do next: a genuine inference call
+          to the Anthropic API. This is the step with no equivalent at all in the CLI path — a
+          scripted <code>vibium click</code> has no "decide what to click" step, it's already
+          decided.</p></div>
+
+      <div class="stagenum">2</div>
+      <div class="stage"><b>The MCP server is one long-lived process for the whole session.</b>
+        <p>Unlike the CLI, where every command is a fresh OS process, <code>vibium mcp</code>
+          is launched once (as a child process of <code>claude -p</code>, per this project's
+          harness config) and stays alive for every tool call the agent makes during that
+          session — confirmed by the same server handling all 8+ tool calls in a single run's
+          transcript.</p></div>
+
+      <div class="stagenum">3</div>
+      <div class="stage"><b>Tool names carry the server's prefix.</b>
+        <p>Confirmed live parsing real transcripts: calls show up as
+          <code>mcp__vibium__browser_navigate</code>, <code>mcp__vibium__browser_click</code>,
+          etc. — not the bare <code>browser_navigate</code> the MCP spec examples show. A
+          transcript parser that matches on the bare name silently finds nothing — this is
+          exactly the bug this project's own <code>journey_mcp.py</code> hit and fixed first.</p></div>
+
+      <div class="stagenum">4</div>
+      <div class="stage"><b>Beneath the MCP server, it's the identical daemon/browser path.</b>
+        <p>Same Unix socket, same daemon PID, same BiDi transport to the same kind of
+          Chrome-for-Testing process with its own fresh temp profile — see
+          <a href="vibium-cli-flow.html">the CLI diagram</a>. The MCP layer sits entirely
+          <em>above</em> this, translating agent tool calls into the same commands the CLI
+          issues directly.</p></div>
+
+      <div class="stagenum">5</div>
+      <div class="stage"><b>Tool results are content-block lists, not bare strings.</b>
+        <p>A <code>tool_result</code>'s content is <code>[{"type":"text","text":"..."}]</code>,
+          not a plain string — JSON-encoding the whole block instead of extracting the text
+          was the second bug this session's harness hit before results parsed correctly.</p></div>
+
+      <div class="stagenum">6</div>
+      <div class="stage"><b>The loop repeats per step, each one paying the reasoning cost again.</b>
+        <p>Navigate, dismiss, fill, click, fill, click — each is its own reasoning-then-tool-call
+          round trip. That accumulation, not any single slow step, is why an MCP-driven run
+          reaches the same real submit click roughly 15–25 seconds after load, against the CLI
+          arm's ~3.5–4.5 seconds for the identical sequence.</p></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <p class="eyebrow">What this costs, measured</p>
+    <div class="factrow">
+      <div class="fact"><div class="k">14.6–24.6s</div>
+        <div class="l">arrival time at the real submit click, across 10 real runs this
+          session — vs. the CLI arm's ~3.5–4.5s for the identical 8-step task.</div></div>
+      <div class="fact"><div class="k">~$0.22–0.28</div>
+        <div class="l">actual cost per run, Claude Sonnet, well under the $0.50/run budget
+          cap this project's harness set.</div></div>
+      <div class="fact"><div class="k">35–45s</div>
+        <div class="l">total wall time per run, including all reasoning turns — not just the
+          time to reach the timed click.</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--ink3);margin-top:14px">
+      None of this is CLI/BiDi overhead — the daemon-and-browser layer underneath costs the
+      MCP arm the same 170–250ms per actual browser action as the CLI. The gap is entirely the
+      reasoning layer sitting on top of it. See
+      <code>references/timing-methodology.md</code>'s explicit scope note: the two arms measure
+      different kinds of time and shouldn't be netted against each other.</p>
+  </div>
+
+  <footer>
+    Traced from <a href="https://github.com/lana-20/candy-mapping"><code>candy-mapping</code></a>'s
+    <code>journey_mcp.py</code> harness and its real run transcripts, 2026-08-04. Not vibium's own
+    documentation — direct transcript-level observation, v26.5.31, model <code>claude-sonnet-5</code>.
+  </footer>
+</div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+  function currentTheme() {
+    const attr = document.documentElement.getAttribute("data-theme");
+    if (attr) return attr;
+    return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  async function render() {
+    const isDark = currentTheme() === "dark";
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: isDark ? "dark" : "neutral",
+      themeVariables: isDark ? {} : { primaryColor: "#F3F4F0", primaryBorderColor: "#C3C7BC" },
+    });
+    const nodes = document.querySelectorAll(".mermaid");
+    for (const node of nodes) {
+      if (!node.dataset.raw) node.dataset.raw = node.textContent;
+      node.removeAttribute("data-processed");
+      node.innerHTML = node.dataset.raw;
+    }
+    await mermaid.run({ nodes });
+  }
+
+  document.getElementById("themeBtn").addEventListener("click", () => {
+    const cur = currentTheme();
+    document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>

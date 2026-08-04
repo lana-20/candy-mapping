@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Sequence diagram tracing a vibium CLI command from bash through the daemon, Chrome process, and back — built from live process-level investigation.">
+<title>What happens when a vibium CLI call is sent</title>
+<style>
+:root {
+  --ground:#FBFBF9; --panel:#FFFFFF; --sunk:#F3F4F0;
+  --ink:#141615; --ink2:#3C413B; --ink3:#6A706A;
+  --rule:#DCDFD7; --rule2:#C3C7BC;
+  --accent:#4a3aa7; --accent2:#eb6834; --good:#1a7a4c; --bad:#c23b3b;
+  --sans: ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono: ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --ground:#15171A; --panel:#1B1E22; --sunk:#20242A; --ink:#EDEFEA; --ink2:#C7CBC4;
+          --ink3:#8B9089; --rule:#33383E; --rule2:#454B52; --accent:#9585e0; --accent2:#f0956a; --good:#4fbf8b; --bad:#e07a7a; }
+}
+:root[data-theme="dark"] { --ground:#15171A; --panel:#1B1E22; --sunk:#20242A; --ink:#EDEFEA; --ink2:#C7CBC4;
+  --ink3:#8B9089; --rule:#33383E; --rule2:#454B52; --accent:#9585e0; --accent2:#f0956a; --good:#4fbf8b; --bad:#e07a7a; }
+:root[data-theme="light"] { --ground:#FBFBF9; --panel:#FFFFFF; --sunk:#F3F4F0; --ink:#141615; --ink2:#3C413B;
+  --ink3:#6A706A; --rule:#DCDFD7; --rule2:#C3C7BC; --accent:#4a3aa7; --accent2:#eb6834; --good:#1a7a4c; --bad:#c23b3b; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.5; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 40px 22px 80px; }
+.kick { font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+h1 { font-size: clamp(26px,4vw,38px); line-height:1.08; letter-spacing:-.02em; font-weight:800; margin:10px 0 10px; }
+.sub { font-size:16px; color:var(--ink3); max-width: 640px; margin: 0 0 28px; }
+.panel { background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:22px 24px; margin-bottom:20px; overflow-x:auto; }
+.panel.sunk { background:var(--sunk); }
+.eyebrow { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink3); font-weight:600; margin-bottom:10px; }
+.mermaid { background: var(--panel); display:flex; justify-content:center; }
+.stagegrid { display:grid; grid-template-columns: 28px 1fr; gap:4px 14px; }
+.stagenum { font-family:var(--mono); font-size:12px; font-weight:700; color:var(--accent);
+  border:1px solid var(--rule2); border-radius:50%; width:24px; height:24px; display:grid; place-items:center; }
+.stage { padding: 6px 0 16px; border-bottom:1px solid var(--rule); margin-bottom:10px; }
+.stage:last-child { border-bottom:0; margin-bottom:0; }
+.stage b { font-size:14.5px; }
+.stage p { margin:4px 0 0; font-size:13.5px; color:var(--ink3); line-height:1.45; }
+code { font-family:var(--mono); font-size:.9em; background:var(--sunk); padding:1px 5px; border-radius:4px; color:var(--ink2); }
+.factrow { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+@media (max-width:640px) { .factrow { grid-template-columns: 1fr; } }
+.fact { background:var(--sunk); border-radius:8px; padding:14px 16px; }
+.fact .k { font-family:var(--mono); font-size:20px; font-weight:700; color:var(--accent); }
+.fact .l { font-size:12.5px; color:var(--ink3); margin-top:4px; line-height:1.4; }
+.themebtn { position:fixed; top:14px; right:14px; z-index:10; font-family:var(--mono); font-size:11px;
+  padding:6px 10px; border-radius:6px; border:1px solid var(--rule2); background:var(--panel); color:var(--ink2); cursor:pointer; }
+.nav { font-family:var(--mono); font-size:12.5px; margin-bottom:22px; }
+.nav a { color: var(--ink3); text-decoration: none; border-bottom: 1px solid var(--rule2); }
+footer { margin-top:30px; border-top:2px solid var(--ink); padding-top:16px; font-size:12.5px; color:var(--ink3); }
+footer a { color: var(--ink2); }
+</style>
+</head>
+<body>
+
+<button class="themebtn" id="themeBtn">theme</button>
+
+<div class="wrap">
+  <p class="nav"><a href="vibium-mcp-flow.html">MCP call flow &rarr;</a></p>
+  <p class="kick">vibium internals</p>
+  <h1>What happens when a vibium CLI call is sent</h1>
+  <p class="sub">Traced live from a session of this project's own session-isolation and timing
+    investigations (2026-08-04) — not documentation, direct observation: <code>ps -eww</code>
+    process inspection, daemon status checks, and round-trip timing measurements. Companion:
+    <a href="vibium-mcp-flow.html">the MCP-driven version</a>.</p>
+
+  <div class="panel">
+    <p class="eyebrow">The path, one command</p>
+    <pre class="mermaid">
+sequenceDiagram
+    participant B as Bash
+    participant C as vibium CLI process
+    participant D as vibium daemon
+    participant X as Chrome for Testing
+    participant P as Page (live site)
+
+    B->>C: vibium click "button"
+    activate C
+    Note over C: fresh OS process,<br/>spawned per call
+    C->>D: connect via Unix socket<br/>~/Library/Caches/vibium/vibium.sock
+    activate D
+    alt daemon not running
+        C-->>D: lazy-launch daemon
+    end
+    alt no browser session yet
+        D->>X: spawn Chrome, fresh temp<br/>--user-data-dir profile
+        activate X
+    end
+    D->>X: forward command over BiDi<br/>(WebSocket)
+    X->>P: dispatch the actual action<br/>(click / eval / navigate)
+    P-->>X: DOM state / JS return value
+    X-->>D: BiDi response
+    D-->>C: Unix socket response
+    deactivate D
+    C-->>B: print result, exit code
+    deactivate C
+    Note over X: browser process stays alive —<br/>persists for the next command
+    </pre>
+  </div>
+
+  <div class="panel sunk">
+    <p class="eyebrow">Stage by stage</p>
+    <div class="stagegrid">
+      <div class="stagenum">1</div>
+      <div class="stage"><b>The CLI process is ephemeral, per call.</b>
+        <p>Every <code>vibium &lt;command&gt;</code> spawns a brand-new OS process. It does not
+          persist between calls — that's the daemon's job. This is why per-call overhead exists
+          at all: process spawn + connect + round-trip, every single time.</p></div>
+
+      <div class="stagenum">2</div>
+      <div class="stage"><b>It talks to one shared daemon over a Unix socket.</b>
+        <p>Confirmed via <code>vibium daemon status</code>: one background process, one socket at
+          <code>~/Library/Caches/vibium/vibium.sock</code>. Both the CLI and an MCP server connect
+          to the <em>same</em> daemon PID — but the daemon is a dispatcher, not a shared browser.</p></div>
+
+      <div class="stagenum">3</div>
+      <div class="stage"><b>The daemon lazily launches itself and the browser.</b>
+        <p>Confirmed directly: stopping both, then running <code>vibium go &lt;url&gt;</code> cold,
+          launches the daemon <em>and</em> a browser automatically — no explicit <code>start</code>
+          required.</p></div>
+
+      <div class="stagenum">4</div>
+      <div class="stage"><b>Each session gets its own Chrome process, own profile.</b>
+        <p>Confirmed via <code>ps -eww</code>: every <code>vibium start</code> (or MCP
+          <code>browser_start</code>) launches a distinct Chrome-for-Testing process with a
+          freshly-named temp <code>--user-data-dir</code>. Two concurrent sessions never share
+          cookies, localStorage, or state — verified by setting a cookie in one and reading it
+          from the other (empty).</p></div>
+
+      <div class="stagenum">5</div>
+      <div class="stage"><b>Daemon ↔ browser speaks BiDi, not raw CDP.</b>
+        <p>Vibium is a WebDriver BiDi client (see <code>vibium bidi-test</code>) — the daemon
+          relays the parsed command to Chrome over a BiDi WebSocket session, and Chrome executes
+          it against the real page (click dispatch, JS evaluate, navigation).</p></div>
+
+      <div class="stagenum">6</div>
+      <div class="stage"><b>The result retraces the same path back.</b>
+        <p>Page state / return value → Chrome → BiDi response → daemon → Unix socket → the
+          waiting CLI process → stdout. The CLI process then exits; the daemon and the browser
+          stay running for the next call.</p></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <p class="eyebrow">What this costs, measured</p>
+    <div class="factrow">
+      <div class="fact"><div class="k">170–250ms</div>
+        <div class="l">round-trip for one CLI call, warm daemon+browser — measured directly this
+          session with a loop of <code>vibium eval 'performance.now()'</code>.</div></div>
+      <div class="fact"><div class="k">~3,000ms</div>
+        <div class="l">typical fixed setup cost (navigate + dismiss + fill + arm) before any
+          timed action in a multi-step flow — several of these 170–250ms round trips stacked.</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--ink3);margin-top:14px">
+      This is exactly why the CLI's own single-eval timing fix mattered (see
+      <a href="references/timing-methodology.md"><code>timing-methodology.md</code></a>):
+      splitting "read the clock" and "fire the click" across two of these round trips left one
+      full trip's worth of latency unaccounted for inside a window only ~500ms wide.</p>
+  </div>
+
+  <footer>
+    Traced from <a href="https://github.com/lana-20/candy-mapping"><code>candy-mapping</code></a>'s
+    session-isolation and timing-methodology investigations, 2026-08-04. Not vibium's own
+    documentation — direct process-level observation on this machine, v26.5.31.
+  </footer>
+</div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+  function currentTheme() {
+    const attr = document.documentElement.getAttribute("data-theme");
+    if (attr) return attr;
+    return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  async function render() {
+    const isDark = currentTheme() === "dark";
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: isDark ? "dark" : "neutral",
+      themeVariables: isDark ? {} : { primaryColor: "#F3F4F0", primaryBorderColor: "#C3C7BC" },
+    });
+    const nodes = document.querySelectorAll(".mermaid");
+    for (const node of nodes) {
+      if (!node.dataset.raw) node.dataset.raw = node.textContent;
+      node.removeAttribute("data-processed");
+      node.innerHTML = node.dataset.raw;
+    }
+    await mermaid.run({ nodes });
+  }
+
+  document.getElementById("themeBtn").addEventListener("click", () => {
+    const cur = currentTheme();
+    document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>
