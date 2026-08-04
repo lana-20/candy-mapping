@@ -22,6 +22,7 @@ All live at **[lana-20.github.io/candy-mapping](https://lana-20.github.io/candy-
 | [The 8-step test case, command by command](https://lana-20.github.io/candy-mapping/vibium-test-case-commands.html) (`vibium-test-case-commands.html`) | Every canonical step, the real CLI command and the real MCP tool call, side by side |
 | [PNSQC 2026 poster — web companion](https://lana-20.github.io/candy-mapping/pnsqc-poster/assets/poster.html) (`pnsqc-poster/assets/poster.html`) | Interactive companion to the separate PNSQC poster submission built from this project |
 | [PNSQC 2026 poster — A0 print board](https://lana-20.github.io/candy-mapping/pnsqc-poster/assets/poster-board.html) (`pnsqc-poster/assets/poster-board.html`) | Print-ready version, 841×1189mm at 1:1 |
+| [PNSQC 2026 poster — handout](https://lana-20.github.io/candy-mapping/pnsqc-poster/assets/handout.html) (`pnsqc-poster/assets/handout.html`) | 2-page US Letter handout: the worked example, run-it-yourself steps, and a QR code to this repo |
 
 ## Install
 
@@ -131,6 +132,7 @@ pnsqc-poster/                     separate PNSQC 2026 poster submission built fr
   PNSQC-PROPOSAL.md               title, abstract, bio
   assets/poster.html              web companion (interactive, light/dark)
   assets/poster-board.html        A0 print board
+  assets/handout.html             2-page US Letter handout
 ```
 
 ## Credit

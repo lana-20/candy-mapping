@@ -235,7 +235,21 @@ bisections across this one session now exist:
 re-measurement, same direction each time — genuine within-session drift, not the ~1.9s
 jump the single control click implied. That click was very likely an outlier (network
 jitter, a slow individual page load) rather than a representative sample of where the
-boundary actually sat at that moment. `scripts/bisect.sh` also had a real bug found
+boundary actually sat at that moment.
+
+**Which edge, precisely.** The ~150–250ms figure describes the discard edge (154ms,
+then 254ms) and the bracket midpoint (153.5ms, then 147.5ms) — both land cleanly in
+that range. The success edge is noisier (53ms, then 141ms) and doesn't fit as neatly;
+that's not a contradiction, it's a precision artifact. The original 2026-07-27 bracket
+(512ms wide) came from the coarse ten-point sweep in `poster_data.json`'s `bisect`
+array, not a true adaptive bisection — `bisect.sh`'s ≤400ms stopping guarantee only
+applies to the two 2026-08-04 re-bisections (311ms and 298ms wide), so comparing the
+original bracket's success edge against the later ones compares two different
+precisions, not the same measurement twice. Quote the discard edge or the midpoint if
+a single "how much did it move" number is needed; the success-edge delta alone is not
+a reliable one.
+
+`scripts/bisect.sh` also had a real bug found
 during this re-measurement — its coarse sweep didn't distinguish a precondition failure
 (fill didn't register) from a genuine SWALLOWED, so a corrupted probe could silently
 enter the bracket; fixed to check the exit code explicitly instead of relying on bash
