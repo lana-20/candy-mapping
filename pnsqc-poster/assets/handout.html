@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Handout — The Window Is Four Seconds Wide — PNSQC 2026</title>
+<style>
+@page { size: letter; margin: 0.55in; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+:root {
+  --ground:#FBFBF9; --panel:#FFFFFF; --sunk:#F3F4F0;
+  --ink:#141615; --ink2:#3C413B; --ink3:#6A706A;
+  --rule:#DCDFD7; --rule2:#C3C7BC;
+  --cli:#4a3aa7; --mcp:#eb6834; --bad:#d03b3b; --badbg:#FDF1F1;
+  --sans: ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono: ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+body {
+  background:var(--ground); color:var(--ink); font-family:var(--sans);
+  font-size:10.5px; line-height:1.42; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+.page { width:7.4in; margin:0 auto; padding:6px 0 0; page-break-after:always; }
+.page:last-child { page-break-after:auto; }
+
+h1 { font-size:26px; line-height:1.04; letter-spacing:-0.02em; font-weight:800; margin:4px 0 6px; }
+h2 { font-size:15px; line-height:1.15; letter-spacing:-0.01em; font-weight:750; margin:0 0 6px; }
+h3 { font-size:12.5px; font-weight:700; margin:0 0 4px; }
+p  { margin:0 0 8px; }
+.kick { font-family:var(--mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase;
+        color:var(--cli); font-weight:700; }
+.eyebrow { font-family:var(--mono); font-size:9px; letter-spacing:0.13em; text-transform:uppercase;
+           color:var(--ink3); font-weight:600; margin-bottom:5px; }
+.small { font-size:10.5px; color:var(--ink3); line-height:1.4; }
+
+header { border-bottom:1.6px solid var(--ink); padding-bottom:8px; margin-bottom:12px; }
+.byline { display:flex; flex-wrap:wrap; gap:2px 16px; margin-top:6px;
+          font-family:var(--mono); font-size:9.5px; color:var(--ink3); }
+.byline b { color:var(--ink2); }
+
+.figrow { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule);
+          border:1px solid var(--rule); margin-bottom:14px; }
+.fig { background:var(--ground); padding:8px 9px 9px; }
+.figv { font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:19px;
+        font-weight:700; line-height:1; letter-spacing:-0.02em; }
+.figv.a { color:var(--cli); } .figv.b { color:var(--bad); }
+.figl { font-size:9px; color:var(--ink3); margin-top:4px; line-height:1.3; }
+
+.tlwrap { background:var(--sunk); border-radius:2px; padding:8px; margin-bottom:14px; }
+
+table { border-collapse:collapse; width:100%; font-size:10px; margin-bottom:14px; }
+th,td { padding:4px 7px; text-align:left; border-bottom:0.8px solid var(--rule); }
+thead th { font-family:var(--mono); font-size:8.5px; letter-spacing:0.06em; text-transform:uppercase;
+           color:var(--ink3); background:var(--sunk); }
+td.n, th.n { text-align:right; font-family:var(--mono); font-variant-numeric:tabular-nums; }
+tbody tr:last-child td { border-bottom:0; }
+
+.steps { counter-reset:s; margin-bottom:14px; }
+.step { display:grid; grid-template-columns:18px 1fr; gap:8px; margin-bottom:9px; }
+.step::before { counter-increment:s; content:counter(s); font-family:var(--mono); font-size:9.5px;
+                font-weight:700; color:var(--cli); border:1px solid var(--rule2); border-radius:50%;
+                width:18px; height:18px; display:grid; place-items:center; }
+.step b { font-size:11px; } .step p { font-size:10px; color:var(--ink3); line-height:1.35; margin:2px 0 0; }
+pre { font-family:var(--mono); font-size:9.3px; background:var(--sunk); padding:7px 8px;
+      border-radius:2px; overflow:hidden; white-space:pre-wrap; line-height:1.5; color:var(--ink2);
+      margin:0 0 14px; }
+code { font-family:var(--mono); font-size:0.92em; }
+
+.panel { background:var(--panel); border:1px solid var(--rule); padding:9px 10px 10px; margin-bottom:14px; }
+.panel.sunk { background:var(--sunk); }
+.checklist { margin:0; padding-left:0; list-style:none; }
+.checklist li { font-size:10.3px; color:var(--ink2); line-height:1.38; margin-bottom:7px;
+                padding-left:20px; position:relative; }
+.checklist li::before { content:"\2610"; position:absolute; left:0; color:var(--ink3); font-size:11px; }
+.checklist b { color:var(--ink); }
+
+.qgrid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; }
+.q { background:var(--sunk); border-left:3px solid var(--cli); padding:8px 10px; }
+.q b { display:block; font-size:10.3px; margin-bottom:3px; }
+.q p { font-size:9.8px; color:var(--ink3); margin:0; line-height:1.35; }
+
+footer { display:grid; grid-template-columns:1fr auto; gap:16px; align-items:center;
+         border-top:1.4px solid var(--ink); padding-top:10px; }
+footer .links { font-size:9.8px; color:var(--ink3); line-height:1.55; }
+footer .links b { color:var(--ink); }
+footer .qr { width:0.85in; height:0.85in; }
+footer .qr svg { width:100%; height:100%; display:block; }
+footer .qrwrap { display:flex; flex-direction:column; align-items:center; gap:3px; }
+footer .qrwrap span { font-family:var(--mono); font-size:7.5px; color:var(--ink3); }
+
+.pagefoot { text-align:center; font-family:var(--mono); font-size:8px; color:var(--rule2);
+            margin-top:10px; }
+</style></head>
+<body>
+
+<div class="page">
+  <header>
+    <p class="kick">PNSQC 2026 &middot; Poster Handout &middot; 1 of 2</p>
+    <h1>The window is four seconds wide &mdash; and it moves.</h1>
+    <div class="byline">
+      <span><b>Lana Begunova</b> &middot; Daisy Lady Bug &middot; begunova@gmail.com</span>
+      <span>AUT <b>candymapper.com</b></span>
+      <span>Tool <b>Vibium v26.5.31</b> &middot; CLI + MCP</span>
+    </div>
+  </header>
+
+  <p class="small">CandyMapper.com's contact form has a Submit button that's clickable before its own
+    handler finishes wiring up. The first click after page load is silently discarded &mdash; no error,
+    no request, nothing to notice. Click again and it works. Below is the worked example: how the
+    window was measured, and how it turned out not to be a fixed constant.</p>
+
+  <div class="figrow">
+    <div class="fig"><div class="figv a">3.7&ndash;4.4s</div><div class="figl">vulnerability window, moves
+      within a session</div></div>
+    <div class="fig"><div class="figv b">49/50 &middot; 50/50</div><div class="figl">hardened hit rate,
+      full 8-step journey, n=50 each</div></div>
+    <div class="fig"><div class="figv">4.6&times;</div><div class="figl">slower arrival at Submit &mdash;
+      21.3s (MCP) vs 4.7s (CLI) medians</div></div>
+  </div>
+
+  <p class="eyebrow">Worked example &mdash; the original ten-probe sweep</p>
+  <div class="tlwrap"><svg viewBox="0 0 1150 340" width="100%" height="auto" role="img" aria-label="Timeline of ten measured Submit clicks. Clicks before 3.7s are discarded by the page; clicks after 4.2s succeed."><rect x="70" y="60" width="154.2" height="284" fill="var(--bad)" opacity="0.13"/><rect x="224.2" y="60" width="21.4" height="284" fill="var(--rule2)" opacity="0.35"/><rect x="245.6" y="60" width="834.4" height="284" fill="var(--cli)" opacity="0.13"/><rect x="70" y="60" width="1010.0" height="284" fill="none" stroke="var(--rule)"/><line x1="224.2" y1="60" x2="224.2" y2="344" stroke="var(--bad)" stroke-width="2" stroke-dasharray="6 5" opacity="0.8"/><line x1="245.6" y1="60" x2="245.6" y2="344" stroke="var(--cli)" stroke-width="2" stroke-dasharray="6 5" opacity="0.8"/><text x="147.1" y="127.0" text-anchor="middle" font-family="var(--sans)" font-size="26" font-weight="700" fill="var(--bad)" letter-spacing="-0.5">SUBMIT DISCARDED</text><text x="147.1" y="153.0" text-anchor="middle" font-family="var(--sans)" font-size="13" fill="var(--ink3)">the page takes the click and does nothing</text><text x="662.8" y="127.0" text-anchor="middle" font-family="var(--sans)" font-size="26" font-weight="700" fill="var(--cli)" letter-spacing="-0.5">SUBMIT WORKS</text><text x="662.8" y="153.0" text-anchor="middle" font-family="var(--sans)" font-size="13" fill="var(--ink3)">every time, exactly as designed</text><rect x="176.9" y="20" width="116" height="26" rx="13" fill="var(--ink)"/><text x="234.9" y="38" text-anchor="middle" font-family="var(--mono)" font-size="13" font-weight="600" fill="var(--ground)">3.7–4.2s</text><line x1="234.9" y1="46" x2="234.9" y2="60" stroke="var(--ink)" stroke-width="2"/><line x1="70" y1="344" x2="1080" y2="344" stroke="var(--rule)" stroke-width="2"/><line x1="70.0" y1="340" x2="70.0" y2="348" stroke="var(--rule2)" stroke-width="1.5"/><text x="70.0" y="364" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink3)">0s</text><line x1="237.3" y1="340" x2="237.3" y2="348" stroke="var(--rule2)" stroke-width="1.5"/><text x="237.3" y="364" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink3)">4s</text><line x1="404.5" y1="340" x2="404.5" y2="348" stroke="var(--rule2)" stroke-width="1.5"/><text x="404.5" y="364" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink3)">8s</text><line x1="571.8" y1="340" x2="571.8" y2="348" stroke="var(--rule2)" stroke-width="1.5"/><text x="571.8" y="364" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink3)">12s</text><line x1="739.1" y1="340" x2="739.1" y2="348" stroke="var(--rule2)" stroke-width="1.5"/><text x="739.1" y="364" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink3)">16s</text><line x1="906.3" y1="340" x2="906.3" y2="348" stroke="var(--rule2)" stroke-width="1.5"/><text x="906.3" y="364" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink3)">20s</text><line x1="1073.6" y1="340" x2="1073.6" y2="348" stroke="var(--rule2)" stroke-width="1.5"/><text x="1073.6" y="364" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink3)">24s</text><circle cx="186.6" cy="328.0" r="6.5" fill="var(--bad)" stroke="var(--panel)" stroke-width="1.5"/><circle cx="189.8" cy="313.0" r="6.5" fill="var(--bad)" stroke="var(--panel)" stroke-width="1.5"/><circle cx="190.0" cy="298.0" r="6.5" fill="var(--bad)" stroke="var(--panel)" stroke-width="1.5"/><circle cx="224.2" cy="328.0" r="6.5" fill="var(--bad)" stroke="var(--panel)" stroke-width="1.5"/><circle cx="224.2" cy="313.0" r="6.5" fill="var(--bad)" stroke="var(--panel)" stroke-width="1.5"/><circle cx="245.6" cy="328.0" r="6.5" fill="var(--cli)" stroke="var(--panel)" stroke-width="1.5"/><circle cx="248.5" cy="313.0" r="6.5" fill="var(--cli)" stroke="var(--panel)" stroke-width="1.5"/><circle cx="371.1" cy="328.0" r="6.5" fill="var(--cli)" stroke="var(--panel)" stroke-width="1.5"/><circle cx="565.9" cy="328.0" r="6.5" fill="var(--cli)" stroke="var(--panel)" stroke-width="1.5"/><circle cx="1005.2" cy="328.0" r="6.5" fill="var(--cli)" stroke="var(--panel)" stroke-width="1.5"/><text x="70" y="400" font-family="var(--sans)" font-size="13" font-weight="600" fill="var(--ink2)">Time of click, measured from page load</text><text x="1080" y="400" text-anchor="end" font-family="var(--sans)" font-size="12" fill="var(--ink3)">each dot is one real submission attempt</text></svg></div>
+
+  <p class="eyebrow">Then it moved &mdash; three real bisections, same session</p>
+  <table>
+    <thead><tr><th>When</th><th>Discard &rarr; success</th><th class="n">Creep from previous</th></tr></thead>
+    <tbody>
+      <tr><td>First measurement, 2026-07-27</td><td class="n">3,687 &rarr; 4,199ms</td><td class="n">&mdash;</td></tr>
+      <tr><td>Re-bisected ~45 min later, 2026-08-04</td><td class="n">3,941 &rarr; 4,252ms</td><td class="n">~200&ndash;250ms</td></tr>
+      <tr><td>Re-bisected ~90 min later, 2026-08-04</td><td class="n">4,095 &rarr; 4,393ms</td><td class="n">~150&ndash;250ms</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Each row is a real bisection (a full sweep, not one click) &mdash; see the checklist
+    on page 2 for why that distinction is the whole finding. The boundary drifts <b>within a single
+    session</b>, not only session to session, by a modest and repeatable amount. Treat any published
+    bracket as a snapshot of the moment it was measured, not a constant to check new data against
+    later.</p>
+
+  <p class="pagefoot">candy-mapping &middot; page 1 of 2</p>
+</div>
+
+<div class="page">
+  <header>
+    <p class="kick">PNSQC 2026 &middot; Poster Handout &middot; 2 of 2</p>
+    <h2 style="font-size:18px">Run it yourself, and how to catch a claim like this one being wrong</h2>
+  </header>
+
+  <p class="eyebrow">Run it yourself</p>
+  <div class="steps">
+    <div class="step"><div><b>probe</b><p>One timed attempt at a chosen delay after load &rarr; SWALLOWED or worked.
+      <code>bash scripts/probe.sh 4000</code></p></div></div>
+    <div class="step"><div><b>attribute</b><p>Capture-phase listener + network hook proves the page received the
+      click and discarded it &mdash; not a missed selector. <code>bash scripts/attribute.sh</code></p></div></div>
+    <div class="step"><div><b>bisect</b><p>Sweeps the delay and narrows to the failure boundary automatically.
+      <code>bash scripts/bisect.sh</code></p></div></div>
+  </div>
+  <pre>after click 1 &rarr; listener=1  xhr=[]                        message=false
+after click 2 &rarr; listener=2  xhr=["POST .../v3/messages"]  message=true
+
+The page received the first click &mdash; the counter incremented &mdash; and did nothing with it.</pre>
+
+  <p class="eyebrow">How to catch an overstated drift claim (the mistake this project made, and fixed)</p>
+  <div class="panel sunk">
+    <ul class="checklist">
+      <li><b>A single click is not a re-confirmation.</b> The first version of this finding claimed the
+        window had moved to "6,054ms, nearly two seconds later" &mdash; based on one control click, not a
+        real bisection. It was wrong. Re-bisecting properly (multiple probes) found a real but far more
+        modest 150&ndash;250ms creep instead.</li>
+      <li><b>Distinguish a precondition failure from a real result.</b> A bug in <code>bisect.sh</code>'s
+        coarse sweep let a <code>PRECONDITION FAILED</code> (bad fill, wrong state) read identically to a
+        genuine <code>SWALLOWED</code>, silently corrupting the bracket. Check the exit code explicitly,
+        not a bare truthy <code>if</code>.</li>
+      <li><b>Check whether local load explains a timing change before trusting the finding.</b> Verified the
+        harness's own arrival times were flat/declining across the run sequence, not rising, before
+        concluding the drift was real and not measurement noise.</li>
+      <li><b>A rate-limit rejection can look like silence, not an error.</b> <code>claude -p</code> reports a
+        session-limit rejection as a structured <em>stdout</em> JSON event, not stderr &mdash; a harness that
+        only scans stderr will burn calls on instant, zero-cost failures without noticing.</li>
+      <li><b>Quarantine bad batches, don't delete them.</b> Every rejected or superseded run in this
+        project lives under <code>data/runs/_rejected/&lt;reason&gt;/</code> &mdash; they're the test
+        fixtures for the next harness bug, not just noise to clear away.</li>
+    </ul>
+  </div>
+
+  <p class="eyebrow">Two open questions for the reviewer</p>
+  <div class="qgrid">
+    <div class="q"><b>Does a 150&ndash;250ms boundary creep matter operationally?</b>
+      <p>It's real and repeatable, but far inside the noise budget most CI gates already tolerate. Is
+        "the window moves" itself the finding worth a poster, or only the underlying race?</p></div>
+    <div class="q"><b>Is conclusions-first the right layout for this venue?</b>
+      <p>The board leads with conclusions immediately below the masthead (Erren &amp; Bourne rule 8)
+        rather than the template's Abstract &rarr; Introduction &rarr; Approach &rarr; Conclusion order.
+        Branding is reproduced faithfully; the section order is not. Acceptable before printing?</p></div>
+  </div>
+
+  <footer>
+    <div class="links">
+      <b>Full write-up, raw data, and all scripts:</b><br>
+      github.com/lana-20/candy-mapping &middot; lana-20.github.io/candy-mapping<br>
+      <b>Lana Begunova</b> &middot; begunova@gmail.com &middot; daisyladybug.com
+    </div>
+    <div class="qrwrap">
+      <div class="qr"><?xml version='1.0' encoding='UTF-8'?>
+<svg width="31mm" height="31mm" version="1.1" viewBox="0 0 31 31" xmlns="http://www.w3.org/2000/svg"><path d="M1,1H2V2H1zM2,1H3V2H2zM3,1H4V2H3zM4,1H5V2H4zM5,1H6V2H5zM6,1H7V2H6zM7,1H8V2H7zM10,1H11V2H10zM11,1H12V2H11zM13,1H14V2H13zM16,1H17V2H16zM19,1H20V2H19zM20,1H21V2H20zM23,1H24V2H23zM24,1H25V2H24zM25,1H26V2H25zM26,1H27V2H26zM27,1H28V2H27zM28,1H29V2H28zM29,1H30V2H29zM1,2H2V3H1zM7,2H8V3H7zM9,2H10V3H9zM11,2H12V3H11zM12,2H13V3H12zM13,2H14V3H13zM14,2H15V3H14zM16,2H17V3H16zM18,2H19V3H18zM20,2H21V3H20zM23,2H24V3H23zM29,2H30V3H29zM1,3H2V4H1zM3,3H4V4H3zM4,3H5V4H4zM5,3H6V4H5zM7,3H8V4H7zM10,3H11V4H10zM11,3H12V4H11zM12,3H13V4H12zM13,3H14V4H13zM15,3H16V4H15zM17,3H18V4H17zM20,3H21V4H20zM23,3H24V4H23zM25,3H26V4H25zM26,3H27V4H26zM27,3H28V4H27zM29,3H30V4H29zM1,4H2V5H1zM3,4H4V5H3zM4,4H5V5H4zM5,4H6V5H5zM7,4H8V5H7zM10,4H11V5H10zM13,4H14V5H13zM15,4H16V5H15zM16,4H17V5H16zM17,4H18V5H17zM23,4H24V5H23zM25,4H26V5H25zM26,4H27V5H26zM27,4H28V5H27zM29,4H30V5H29zM1,5H2V6H1zM3,5H4V6H3zM4,5H5V6H4zM5,5H6V6H5zM7,5H8V6H7zM9,5H10V6H9zM10,5H11V6H10zM11,5H12V6H11zM14,5H15V6H14zM15,5H16V6H15zM16,5H17V6H16zM18,5H19V6H18zM19,5H20V6H19zM20,5H21V6H20zM23,5H24V6H23zM25,5H26V6H25zM26,5H27V6H26zM27,5H28V6H27zM29,5H30V6H29zM1,6H2V7H1zM7,6H8V7H7zM10,6H11V7H10zM13,6H14V7H13zM14,6H15V7H14zM16,6H17V7H16zM17,6H18V7H17zM18,6H19V7H18zM19,6H20V7H19zM20,6H21V7H20zM21,6H22V7H21zM23,6H24V7H23zM29,6H30V7H29zM1,7H2V8H1zM2,7H3V8H2zM3,7H4V8H3zM4,7H5V8H4zM5,7H6V8H5zM6,7H7V8H6zM7,7H8V8H7zM9,7H10V8H9zM11,7H12V8H11zM13,7H14V8H13zM15,7H16V8H15zM17,7H18V8H17zM19,7H20V8H19zM21,7H22V8H21zM23,7H24V8H23zM24,7H25V8H24zM25,7H26V8H25zM26,7H27V8H26zM27,7H28V8H27zM28,7H29V8H28zM29,7H30V8H29zM10,8H11V9H10zM13,8H14V9H13zM14,8H15V9H14zM15,8H16V9H15zM16,8H17V9H16zM18,8H19V9H18zM19,8H20V9H19zM20,8H21V9H20zM1,9H2V10H1zM3,9H4V10H3zM5,9H6V10H5zM7,9H8V10H7zM10,9H11V10H10zM11,9H12V10H11zM12,9H13V10H12zM14,9H15V10H14zM17,9H18V10H17zM18,9H19V10H18zM19,9H20V10H19zM21,9H22V10H21zM25,9H26V10H25zM28,9H29V10H28zM1,10H2V11H1zM3,10H4V11H3zM4,10H5V11H4zM5,10H6V11H5zM9,10H10V11H9zM10,10H11V11H10zM12,10H13V11H12zM13,10H14V11H13zM17,10H18V11H17zM18,10H19V11H18zM19,10H20V11H19zM21,10H22V11H21zM23,10H24V11H23zM26,10H27V11H26zM29,10H30V11H29zM3,11H4V12H3zM7,11H8V12H7zM11,11H12V12H11zM12,11H13V12H12zM14,11H15V12H14zM18,11H19V12H18zM19,11H20V12H19zM21,11H22V12H21zM22,11H23V12H22zM23,11H24V12H23zM25,11H26V12H25zM27,11H28V12H27zM28,11H29V12H28zM29,11H30V12H29zM3,12H4V13H3zM4,12H5V13H4zM5,12H6V13H5zM6,12H7V13H6zM8,12H9V13H8zM11,12H12V13H11zM13,12H14V13H13zM14,12H15V13H14zM16,12H17V13H16zM17,12H18V13H17zM18,12H19V13H18zM20,12H21V13H20zM21,12H22V13H21zM24,12H25V13H24zM25,12H26V13H25zM28,12H29V13H28zM1,13H2V14H1zM2,13H3V14H2zM4,13H5V14H4zM5,13H6V14H5zM6,13H7V14H6zM7,13H8V14H7zM8,13H9V14H8zM11,13H12V14H11zM14,13H15V14H14zM16,13H17V14H16zM17,13H18V14H17zM18,13H19V14H18zM19,13H20V14H19zM20,13H21V14H20zM21,13H22V14H21zM22,13H23V14H22zM23,13H24V14H23zM26,13H27V14H26zM28,13H29V14H28zM29,13H30V14H29zM2,14H3V15H2zM5,14H6V15H5zM6,14H7V15H6zM9,14H10V15H9zM10,14H11V15H10zM14,14H15V15H14zM17,14H18V15H17zM18,14H19V15H18zM19,14H20V15H19zM21,14H22V15H21zM22,14H23V15H22zM23,14H24V15H23zM26,14H27V15H26zM29,14H30V15H29zM1,15H2V16H1zM3,15H4V16H3zM5,15H6V16H5zM7,15H8V16H7zM8,15H9V16H8zM9,15H10V16H9zM10,15H11V16H10zM11,15H12V16H11zM12,15H13V16H12zM13,15H14V16H13zM14,15H15V16H14zM19,15H20V16H19zM23,15H24V16H23zM25,15H26V16H25zM26,15H27V16H26zM28,15H29V16H28zM29,15H30V16H29zM1,16H2V17H1zM2,16H3V17H2zM3,16H4V17H3zM6,16H7V17H6zM11,16H12V17H11zM13,16H14V17H13zM14,16H15V17H14zM15,16H16V17H15zM16,16H17V17H16zM17,16H18V17H17zM18,16H19V17H18zM21,16H22V17H21zM22,16H23V17H22zM23,16H24V17H23zM26,16H27V17H26zM28,16H29V17H28zM1,17H2V18H1zM5,17H6V18H5zM7,17H8V18H7zM8,17H9V18H8zM9,17H10V18H9zM11,17H12V18H11zM12,17H13V18H12zM15,17H16V18H15zM16,17H17V18H16zM17,17H18V18H17zM18,17H19V18H18zM19,17H20V18H19zM20,17H21V18H20zM21,17H22V18H21zM23,17H24V18H23zM24,17H25V18H24zM26,17H27V18H26zM28,17H29V18H28zM29,17H30V18H29zM3,18H4V19H3zM4,18H5V19H4zM6,18H7V19H6zM8,18H9V19H8zM9,18H10V19H9zM10,18H11V19H10zM11,18H12V19H11zM12,18H13V19H12zM22,18H23V19H22zM23,18H24V19H23zM26,18H27V19H26zM27,18H28V19H27zM29,18H30V19H29zM1,19H2V20H1zM3,19H4V20H3zM6,19H7V20H6zM7,19H8V20H7zM10,19H11V20H10zM12,19H13V20H12zM13,19H14V20H13zM14,19H15V20H14zM18,19H19V20H18zM22,19H23V20H22zM24,19H25V20H24zM25,19H26V20H25zM28,19H29V20H28zM29,19H30V20H29zM2,20H3V21H2zM6,20H7V21H6zM8,20H9V21H8zM9,20H10V21H9zM10,20H11V21H10zM13,20H14V21H13zM16,20H17V21H16zM18,20H19V21H18zM19,20H20V21H19zM20,20H21V21H20zM21,20H22V21H21zM22,20H23V21H22zM23,20H24V21H23zM24,20H25V21H24zM25,20H26V21H25zM26,20H27V21H26zM28,20H29V21H28zM1,21H2V22H1zM5,21H6V22H5zM6,21H7V22H6zM7,21H8V22H7zM9,21H10V22H9zM10,21H11V22H10zM12,21H13V22H12zM16,21H17V22H16zM18,21H19V22H18zM20,21H21V22H20zM21,21H22V22H21zM22,21H23V22H22zM23,21H24V22H23zM24,21H25V22H24zM25,21H26V22H25zM9,22H10V23H9zM11,22H12V23H11zM12,22H13V23H12zM14,22H15V23H14zM17,22H18V23H17zM18,22H19V23H18zM20,22H21V23H20zM21,22H22V23H21zM25,22H26V23H25zM27,22H28V23H27zM28,22H29V23H28zM29,22H30V23H29zM1,23H2V24H1zM2,23H3V24H2zM3,23H4V24H3zM4,23H5V24H4zM5,23H6V24H5zM6,23H7V24H6zM7,23H8V24H7zM10,23H11V24H10zM12,23H13V24H12zM13,23H14V24H13zM15,23H16V24H15zM17,23H18V24H17zM18,23H19V24H18zM19,23H20V24H19zM20,23H21V24H20zM21,23H22V24H21zM23,23H24V24H23zM25,23H26V24H25zM26,23H27V24H26zM28,23H29V24H28zM29,23H30V24H29zM1,24H2V25H1zM7,24H8V25H7zM11,24H12V25H11zM14,24H15V25H14zM15,24H16V25H15zM16,24H17V25H16zM17,24H18V25H17zM18,24H19V25H18zM19,24H20V25H19zM21,24H22V25H21zM25,24H26V25H25zM26,24H27V25H26zM28,24H29V25H28zM1,25H2V26H1zM3,25H4V26H3zM4,25H5V26H4zM5,25H6V26H5zM7,25H8V26H7zM9,25H10V26H9zM10,25H11V26H10zM13,25H14V26H13zM15,25H16V26H15zM17,25H18V26H17zM18,25H19V26H18zM21,25H22V26H21zM22,25H23V26H22zM23,25H24V26H23zM24,25H25V26H24zM25,25H26V26H25zM1,26H2V27H1zM3,26H4V27H3zM4,26H5V27H4zM5,26H6V27H5zM7,26H8V27H7zM10,26H11V27H10zM12,26H13V27H12zM13,26H14V27H13zM14,26H15V27H14zM15,26H16V27H15zM17,26H18V27H17zM18,26H19V27H18zM21,26H22V27H21zM24,26H25V27H24zM25,26H26V27H25zM27,26H28V27H27zM28,26H29V27H28zM29,26H30V27H29zM1,27H2V28H1zM3,27H4V28H3zM4,27H5V28H4zM5,27H6V28H5zM7,27H8V28H7zM9,27H10V28H9zM10,27H11V28H10zM12,27H13V28H12zM17,27H18V28H17zM19,27H20V28H19zM20,27H21V28H20zM24,27H25V28H24zM25,27H26V28H25zM26,27H27V28H26zM29,27H30V28H29zM1,28H2V29H1zM7,28H8V29H7zM10,28H11V29H10zM14,28H15V29H14zM15,28H16V29H15zM17,28H18V29H17zM18,28H19V29H18zM19,28H20V29H19zM20,28H21V29H20zM21,28H22V29H21zM22,28H23V29H22zM25,28H26V29H25zM28,28H29V29H28zM1,29H2V30H1zM2,29H3V30H2zM3,29H4V30H3zM4,29H5V30H4zM5,29H6V30H5zM6,29H7V30H6zM7,29H8V30H7zM9,29H10V30H9zM10,29H11V30H10zM11,29H12V30H11zM12,29H13V30H12zM16,29H17V30H16zM17,29H18V30H17zM18,29H19V30H18zM20,29H21V30H20zM21,29H22V30H21zM22,29H23V30H22zM24,29H25V30H24zM25,29H26V30H25zM28,29H29V30H28zM29,29H30V30H29z" id="qr-path" fill="#000000" fill-opacity="1" fill-rule="nonzero" stroke="none"/></svg></div>
+      <span>scan for the repo</span>
+    </div>
+  </footer>
+  <p class="pagefoot">candy-mapping &middot; page 2 of 2</p>
+</div>
+
+</body></html>
