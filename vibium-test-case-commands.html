@@ -140,11 +140,11 @@ mcp__vibium__browser_fill
       <div class="stephead"><span class="stepnum">6</span><span class="stepname">Verify error "Please enter a valid email address."</span></div>
       <div class="stepgrid">
         <div class="armbox"><div class="armlabel cli">CLI</div><pre>vibium wait text "$VALIDATION_TEXT" --timeout 800</pre>
-          <div class="note">Bounded, non-fatal — a long wait here would force the run past the same window step 8 needs to land inside. Confirmed 2026-08-04: reads <code>false</code> 0/50 times (the click was raced).</div></div>
+          <div class="note">Bounded, non-fatal — a long wait here would force the run past the same window step 8 needs to land inside. Confirmed 2026-08-04: reads <code>false</code> 0/70 times (the click was raced).</div></div>
         <div class="armbox"><div class="armlabel mcp">MCP</div><pre>mcp__vibium__browser_evaluate
   {"expression": "document.body.innerText.includes(
      \"Please enter a valid email address\")"}</pre>
-          <div class="note">Unconditional, no timeout — the agent's own reasoning time already carries it past the window. Confirmed: reads <code>true</code> 50/50 times.</div></div>
+          <div class="note">Unconditional, no timeout — the agent's own reasoning time already carries it past the window. Confirmed: reads <code>true</code> 70/70 times.</div></div>
       </div>
     </div>
 
@@ -195,7 +195,7 @@ mcp__vibium__browser_evaluate  (read result -> "worked"|"SWALLOWED")</pre>
     and the prompt in
     <a href="https://github.com/lana-20/candy-mapping/blob/main/scripts/journey_mcp.py"><code>scripts/journey_mcp.py</code></a>,
     2026-08-04. Full canonical step list: <code>references/test-case.md</code>. Hardened results
-    (n=50 each): <code>references/timing-methodology.md</code>.
+    (n=70 each): <code>references/timing-methodology.md</code>.
   </footer>
 </div>
 

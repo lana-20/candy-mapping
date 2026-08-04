@@ -77,12 +77,12 @@ published window as a snapshot, not a constant — see
 [`references/timing-methodology.md`](references/timing-methodology.md).
 
 Across sixty original benchmark runs the same eight steps were driven two ways, hardened
-2026-08-04 to 100 independent runs of the full canonical journey:
+2026-08-04 to 140 independent runs of the full canonical journey:
 
-| Driver | Reaches the action | Hit the bug (original, n=30) | Hit the bug (hardened, n=50) |
+| Driver | Reaches the action | Hit the bug (original, n=30) | Hit the bug (hardened, n=70) |
 |---|---|---|---|
-| Scripted CLI | ~1s originally, ~4.7s hardened median | **30 / 30** | **49 / 50** |
-| Agent-driven MCP | ~25s originally, ~21.3s hardened median | **0 / 30** | **50 / 50** |
+| Scripted CLI | ~1s originally, ~4.7s hardened median | **30 / 30** | **69 / 70** |
+| Agent-driven MCP | ~25s originally, ~22.0s hardened median | **0 / 30** | **70 / 70** |
 
 Same site, same selectors, same browser engine. Only arrival time differs — which is why a human
 moving a mouse never sees it, and why the defect selects for your fastest users, the ones whose
@@ -92,7 +92,7 @@ thinking between them; the MCP agent re-reasons at every one of those 8 steps, s
 stacked reasoning turns, not one slow step — see
 [`vibium-mcp-flow.html`](https://lana-20.github.io/candy-mapping/vibium-mcp-flow.html) for one
 turn traced stage by stage. The arrival-time *gap* shrank under harder replication (original
-~25×, hardened medians ~4.6×) even as the finding itself held — see
+~25×, hardened medians ~4.7×) even as the finding itself held — see
 [`references/test-case.md`](references/test-case.md) for the exact 8-step sequence both arms now
 run, and [`references/timing-methodology.md`](references/timing-methodology.md) for the full
 hardened numbers, and two harness bugs the hardening pass caught along the

@@ -61,7 +61,7 @@ def main():
     data = json.loads(data_path.read_text())
     b = data["boundary"]
     hard = data["hardening"]
-    # Run-strip and comparison panel now show the hardened n=50 data (2026-08-04), not
+    # Run-strip and comparison panel now show the hardened n=70 data (2026-08-04), not
     # the original 30/30 — "hits" keeps its established meaning here, "hit the bug"
     # (SWALLOWED), for both arms.
     cli = {"hits": hard["cli"]["swallowed"], "total": hard["cli"]["n"]}
@@ -186,9 +186,9 @@ footer b {{ color:var(--ink); }}
     </div>
     <div class="figs">
       <div class="fig"><div class="figv a">3.7&ndash;4.4s</div><div class="figl">vulnerability window<br>moves within a session &mdash; not fixed</div></div>
-      <div class="fig"><div class="figv b">49/50 &middot; 50/50</div><div class="figl">hardened hit rate, n=50 each<br>2026-08-04, full 8-step journey</div></div>
-      <div class="fig"><div class="figv">160</div><div class="figl">total benchmark runs<br>60 original + 100 hardening</div></div>
-      <div class="fig"><div class="figv b">4.6&times;</div><div class="figl">slower arrival at Submit, hardened<br>21.3s (MCP) vs 4.7s (CLI) medians</div></div>
+      <div class="fig"><div class="figv b">69/70 &middot; 70/70</div><div class="figl">hardened hit rate, n=70 each<br>2026-08-04, full 8-step journey</div></div>
+      <div class="fig"><div class="figv">200</div><div class="figl">total benchmark runs<br>60 original + 140 hardening</div></div>
+      <div class="fig"><div class="figv b">4.7&times;</div><div class="figl">slower arrival at Submit, hardened<br>22.0s (MCP) vs 4.7s (CLI) medians</div></div>
     </div>
   </div>
 </header>
@@ -208,15 +208,15 @@ footer b {{ color:var(--ink); }}
       then 3,941&rarr;4,252ms ~45min later, then 4,095&rarr;4,393ms ~90min later &mdash; a consistent
       150&ndash;250ms creep each time. Quote a range measured close to publication, never a fixed
       constant.</p></div>
-    <div class="find w"><span class="findk">04</span><p><b>Hardened at n=50 each, the finding holds &mdash;
+    <div class="find w"><span class="findk">04</span><p><b>Hardened at n=70 each, the finding holds &mdash;
       the margin doesn't.</b> CLI's median arrival rose to ~4.7s (up from ~1s), landing much closer to
-      the boundary than originally measured; MCP stayed ~21s. 49/50 CLI runs still hit the bug, 50/50
-      MCP runs still avoided it &mdash; but the 25&times; arrival gap first measured is really ~4.6&times;
+      the boundary than originally measured; MCP stayed ~22s. 69/70 CLI runs still hit the bug, 70/70
+      MCP runs still avoided it &mdash; but the 25&times; arrival gap first measured is really ~4.7&times;
       under harder, more complete replication (full 8-step journey, not a 2-field shortcut).</p></div>
     <div class="find"><span class="findk">05</span><p><b>The negative path is raced too.</b> Submitting
       without an email is supposed to show a validation error before the real submit. For CLI it almost
-      never does (0/50) &mdash; that click is fast enough to be swallowed by the same race. For MCP it
-      always does (50/50) &mdash; the agent's own reasoning time carries it past the window by then.</p></div>
+      never does (0/70) &mdash; that click is fast enough to be swallowed by the same race. For MCP it
+      always does (70/70) &mdash; the agent's own reasoning time carries it past the window by then.</p></div>
     <div class="find"><span class="findk">06</span><p><b>A human tester falls in the slow category
       too.</b> Moving a mouse and reading labels takes far longer than the window stays open &mdash; this
       defect is structurally invisible to manual testing regardless of which measurement of the window
@@ -319,11 +319,11 @@ after click 2 &rarr; listener=2  xhr=["POST .../v3/messages"]</pre>
         <span class="runrate" style="color:var(--cli)">{cli['hits']}/{cli['total']}</span>
       </div>
       <div class="runrow">
-        <span class="runlab">MCP &middot; ~21.3s to Submit</span>
+        <span class="runlab">MCP &middot; ~22.0s to Submit</span>
         {run_strip(mcp['hits'], mcp['total'], 'var(--bad)')}
         <span class="runrate" style="color:var(--bad)">{mcp['hits']}/{mcp['total']}</span>
       </div>
-      <p class="small" style="margin-top:2mm">Hardened n=50 each, 2026-08-04, full 8-step canonical
+      <p class="small" style="margin-top:2mm">Hardened n=70 each, 2026-08-04, full 8-step canonical
         journey. Same selectors, same browser build. Nothing about the agent's judgment was at fault
         &mdash; it simply arrived too late, every time. (1 CLI run excluded: a precondition failure,
         not counted either way.)</p>
@@ -378,7 +378,7 @@ click 'button[data-aid="CONTACT_SUBMIT_BUTTON_REND"]'</pre>
     claude-sonnet-5 driving the agentic arm; AI also assisted drafting and script authoring. Every
     figure reproduced from published scripts and raw run logs. Method: an eight-step contact-form
     journey. Original measurement 60 runs across 3 sessions, {data['date']}, 480/480 steps passing.
-    Hardened 2026-08-04 with 50 CLI + 50 MCP independent runs of the full journey. Full write-up
+    Hardened 2026-08-04 with 70 CLI + 70 MCP independent runs of the full journey. Full write-up
     and repro scripts at github.com/lana-20/candy-mapping. Thanks to Paul
     Grossman for building CandyMapper.com and for publishing the speed grid reproduced above,
     sandboxes and data genuinely worth breaking (and reusing) tools against. The author is

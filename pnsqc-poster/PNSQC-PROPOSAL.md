@@ -41,16 +41,16 @@ artefact — it is a real hydration race in the page.
 `attribute.sh` proves site-fault vs tool-fault by pairing a capture-phase click counter
 with a network listener; `probe.sh` takes one timed attempt; `bisect.sh` sweeps delay and
 narrows to the failure boundary. On the reference target the boundary is sharp — originally
-3.7s discards, 4.2s succeeds — but not fixed: it moved by roughly two seconds within a
-single later session. Sharp and drifting are not contradictory; the finding is deterministic
-at any given moment, and the moment moves.
+3.7s discards, 4.2s succeeds — but not fixed: it crept forward by 150–250ms per
+re-measurement within a single later session (see below). Sharp and drifting are not
+contradictory; the finding is deterministic at any given moment, and the moment moves.
 
-**The comparison.** Originally 60 runs (30/30 CLI, 0/30 MCP), hardened 2026-08-04 to 100
-independent runs (50 CLI + 50 MCP) of the full eight-step canonical journey. The scripted
+**The comparison.** Originally 60 runs (30/30 CLI, 0/30 MCP), hardened 2026-08-04 to 140
+independent runs (70 CLI + 70 MCP) of the full eight-step canonical journey. The scripted
 runner's median arrival rose to ~4.7s (from the original ~1s) — still inside the window:
-49/50 hit the bug. The MCP agent's median stayed ~21.3s — still outside: 50/50 avoided it.
+69/70 hit the bug. The MCP agent's median stayed ~22.0s — still outside: 70/70 avoided it.
 The finding held under harder replication; the margin did not — the 25× arrival gap first
-measured is really ~4.6× once the boundary itself is accounted for (see below). A human
+measured is really ~4.7× once the boundary itself is accounted for (see below). A human
 moving a mouse falls in the same slow category and structurally cannot see this defect
 either.
 
@@ -74,7 +74,7 @@ comparison-shopping against other tools. The demo should be warm and easy to wal
 the two-minute repro: cold cache, fill two required fields, click Submit under four
 seconds, watch the network, let people ask questions. The findings are reported warts and
 all, including the corrected drift claim (the first version overstated it, on a single
-click, before a proper re-bisection) and the CLI's own negative-path miss (0/50); that
+click, before a proper re-bisection) and the CLI's own negative-path miss (0/70); that
 honesty is the invitation. Anyone curious can re-run the whole thing from the published
 scripts, which is the only "next step" the poster offers.
 
@@ -85,10 +85,10 @@ scripts, which is the only "next step" the poster offers.
 **Quality in the Age of Autonomy: When Deliberation Costs You the Bug**
 
 Alternates:
-- The Window Is Four Seconds Wide — and It Moves: A Bug Scripted Testing Caught 49/50 and Deliberate Testing Never Saw
+- The Window Is Four Seconds Wide — and It Moves: A Bug Scripted Testing Caught 69/70 and Deliberate Testing Never Saw
 - Too Slow to See It: A Four-Second Blind Spot in Autonomous Testing
 - The Click That Never Lands: Measuring a Startup Race Invisible to Careful Testers
-- The Boundary Moved and the Finding Didn't: Hardening a Startup Race to n=100
+- The Boundary Moved and the Finding Didn't: Hardening a Startup Race to n=140
 
 Takes the 2026 theme title directly, on purpose: most of the conversation around
 autonomous testers asks whether their *judgment* is reliable; this poster asks whether
@@ -120,10 +120,10 @@ within a single session, not only session to session.
 I drove the same eight-step journey through Vibium — the verification layer for coding
 agents — on both its surfaces: a scripted CLI runner and an agent-driven MCP session, same
 site, same selectors, same browser build. An original 60-run pass found CLI always inside
-the window (30/30), MCP always outside it (0/30). Hardened to 100 independent runs of the
+the window (30/30), MCP always outside it (0/30). Hardened to 140 independent runs of the
 fuller journey on a separate day, the finding held while its margin narrowed: CLI's
-median arrival rose to ~4.7s, still inside the moved window (49/50); MCP held near 21s,
-outside it (50/50). The 25× arrival gap first measured is closer to 4.6× once the
+median arrival rose to ~4.7s, still inside the moved window (69/70); MCP held near 22s,
+outside it (70/70). The 25× arrival gap first measured is closer to 4.7× once the
 boundary's own drift is accounted for.
 
 Why MCP is slower isn't the browser layer, paid identically by both — it's 8 stacked
@@ -131,8 +131,8 @@ reasoning turns, one per step, against a script issuing all 8 back to back.
 
 A second, quieter race turned up: submitting with no email should show a validation error
 before the real submit, the negative path a careful tester checks first. The CLI's own
-attempt at that click is fast enough to be swallowed by the identical race (0/50
-confirmed); the agent's is not (50/50). Even a test's own precondition check can be what
+attempt at that click is fast enough to be swallowed by the identical race (0/70
+confirmed); the agent's is not (70/70). Even a test's own precondition check can be what
 the bug hides from.
 
 That inverts an intuition "Quality in the Age of Autonomy" invites: deliberation is
@@ -166,7 +166,7 @@ openly at github.com/lana-20. ISTQB CTFL, AWS CCP, CSM.
 `assets/poster-board.html` (A0 print) and `assets/poster.html` (web companion) built from
 `assets/poster_data.json`, which now carries both the original 2026-07-27 measurement and
 the 2026-08-04 hardening (`hardening` key) side by side — the board and companion present
-both, with the hardened n=50/50 numbers as the headline and the original as provenance.
+both, with the hardened n=70/70 numbers as the headline and the original as provenance.
 Screenshot-verified in-browser 2026-08-04.
 
 ## Before submitting — open items
@@ -180,9 +180,10 @@ Screenshot-verified in-browser 2026-08-04.
 - [x] Moot — the sibling poster is archived, not being presented, so there's nothing to
       reference at the easel.
 - [x] Re-verify the 3.7–4.2s window and the 30/30 vs 0/30 split — done 2026-08-04, at
-      n=50/50 with the full canonical journey: 49/50 CLI, 50/50 MCP, boundary confirmed
-      to drift within a session (not a fixed 3.7–4.2s). See `references/timing-methodology.md`
-      and `references/test-case.md` in the main `candy-mapping` repo for full method.
+      n=50/50 then hardened further to n=70/70 the same day, full canonical journey:
+      69/70 CLI, 70/70 MCP, boundary confirmed to drift within a session (not a fixed
+      3.7–4.2s). See `references/timing-methodology.md` and `references/test-case.md`
+      in the main `candy-mapping` repo for full method.
 - [x] Moot — bio originated from the sibling poster, but that poster is archived and not
       being submitted, so there's nothing left to keep in sync.
 - [x] Decided not to disclose or track the hardening's real run cost anywhere published —

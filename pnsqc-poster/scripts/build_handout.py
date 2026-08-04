@@ -151,9 +151,9 @@ footer .qrwrap span {{ font-family:var(--mono); font-size:7.5px; color:var(--ink
     <div class="fig"><div class="figv a">{b['window_lo']}&ndash;4.4s</div><div class="figl">vulnerability window, moves
       within a session</div></div>
     <div class="fig"><div class="figv b">{hard['cli']['swallowed']}/{hard['cli']['n']} &middot; {hard['mcp']['worked']}/{hard['mcp']['n']}</div><div class="figl">hardened hit rate,
-      full 8-step journey, n=50 each</div></div>
-    <div class="fig"><div class="figv">4.6&times;</div><div class="figl">slower arrival at Submit &mdash;
-      21.3s (MCP) vs 4.7s (CLI) medians</div></div>
+      full 8-step journey, n=70 each</div></div>
+    <div class="fig"><div class="figv">4.7&times;</div><div class="figl">slower arrival at Submit &mdash;
+      22.0s (MCP) vs 4.7s (CLI) medians</div></div>
   </div>
 
   <p class="eyebrow">Worked example &mdash; the original ten-probe sweep</p>

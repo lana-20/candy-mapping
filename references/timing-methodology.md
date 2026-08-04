@@ -155,21 +155,23 @@ This table existed only as an unverified guess in the poster's disclosure footer
 written there without a confirmed source. It has since been confirmed and now has a home;
 treat this file, not the poster footer, as the source of record if the two ever disagree.
 
-## The 100-run hardening pass, 2026-08-04
+## The 140-run hardening pass, 2026-08-04
 
 Independent of the original 60-run benchmark above — different date, fuller step
 sequence (`references/test-case.md`'s canonical 8 steps, including the scroll step and
 the negative-path assertion neither original arm explicitly checked), model pinned to
 `claude-sonnet-5`. Full harness: `scripts/journey_cli.sh`, `scripts/journey_mcp.py`,
-resumable, one JSON per run under `data/runs/{cli,mcp}/`.
+resumable, one JSON per run under `data/runs/{cli,mcp}/`. Run in two passes the same
+day — an initial 50/50, extended same-session to 70/70 — the resumable harness just
+picked up at run 51 for each arm; the numbers below are the full n=70 set.
 
-| | CLI (n=50) | MCP (n=50) |
+| | CLI (n=70) | MCP (n=70) |
 |---|---|---|
-| result | 49 SWALLOWED / 1 precondition_failed / 0 worked | 50/50 worked |
-| arrival time | min 4,430ms · max 5,042ms · median 4,684ms · mean 4,701ms (stdev 129ms) | min 17,480ms · max 28,881ms · median 21,330ms · mean 21,856ms (stdev 2,401ms) |
-| negative path confirmed (`validation_confirmed`) | 0/50 | 50/50 |
+| result | 69 SWALLOWED / 1 precondition_failed / 0 worked | 70/70 worked |
+| arrival time | min 4,430ms · max 5,042ms · median 4,710ms · mean 4,719ms (stdev 127ms) | min 17,480ms · max 30,134ms · median 21,986ms · mean 22,588ms (stdev 2,768ms) |
+| negative path confirmed (`validation_confirmed`) | 0/70 | 70/70 |
 
-**Arrival gap, recomputed:** 21,330 / 4,684 ≈ **4.6×** (medians) — down from the original
+**Arrival gap, recomputed:** 21,986 / 4,710 ≈ **4.7×** (medians) — down from the original
 25× (25s / 1s). Not a contradiction: the original figure compared a first-pass ~1s CLI
 arrival against ~25s MCP: two numbers from a leaner 2-field flow, an earlier session, and
 (per the drift finding below) a since-moved boundary. The hardened figure compares the

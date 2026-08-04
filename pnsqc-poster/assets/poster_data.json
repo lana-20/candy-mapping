@@ -20,13 +20,13 @@
   "hardening": {
     "date": "2026-08-04",
     "model": "claude-sonnet-5",
-    "note": "50 CLI + 50 MCP runs of the full 8-step canonical journey (scroll, fill, submit w/o email, verify validation error, fill email, submit again). Independent of the original 60-run benchmark above — different date, different (fuller) step sequence, boundary had drifted by this point.",
-    "cli":  {"label": "Scripted CLI", "n": 50, "swallowed": 49, "worked": 0, "precondition_failed": 1,
-             "arrival_ms": {"min": 4430, "max": 5042, "median": 4684, "mean": 4701},
+    "note": "70 CLI + 70 MCP runs of the full 8-step canonical journey (scroll, fill, submit w/o email, verify validation error, fill email, submit again) — an initial 50/50 batch extended to 70/70 the same day. Independent of the original 60-run benchmark above — different date, different (fuller) step sequence, boundary had drifted by this point.",
+    "cli":  {"label": "Scripted CLI", "n": 70, "swallowed": 69, "worked": 0, "precondition_failed": 1,
+             "arrival_ms": {"min": 4430, "max": 5042, "median": 4710, "mean": 4719},
              "validation_confirmed": 0},
-    "mcp":  {"label": "Agent-driven MCP", "n": 50, "swallowed": 0, "worked": 50,
-             "arrival_ms": {"min": 17480, "max": 28881, "median": 21330, "mean": 21856},
-             "validation_confirmed": 50}
+    "mcp":  {"label": "Agent-driven MCP", "n": 70, "swallowed": 0, "worked": 70,
+             "arrival_ms": {"min": 17480, "max": 30134, "median": 21986, "mean": 22588},
+             "validation_confirmed": 70}
   },
   "attribute": {
     "click1": {"listener": 1, "network": [], "message": false},

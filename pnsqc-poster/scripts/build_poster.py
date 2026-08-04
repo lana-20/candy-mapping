@@ -37,7 +37,7 @@ def main():
     bisect_json = json.dumps(data["bisect"])
     boundary = data["boundary"]
     hard = data["hardening"]
-    # Hardened n=50 data (2026-08-04), not the original 30/30 — "hits" keeps its
+    # Hardened n=70 data (2026-08-04), not the original 30/30 — "hits" keeps its
     # established meaning, "hit the bug" (SWALLOWED), for both arms.
     cli = {"hits": hard["cli"]["swallowed"], "total": hard["cli"]["n"]}
     mcp = {"hits": hard["mcp"]["swallowed"], "total": hard["mcp"]["n"]}
@@ -161,9 +161,9 @@ figcaption b {{ color:var(--ink2); }}
 
 <div class="figs">
   <div class="fig"><div class="figv a">3.7&ndash;4.4s</div><div class="figl">vulnerability window, moves within a session</div></div>
-  <div class="fig"><div class="figv b">49/50 &middot; 50/50</div><div class="figl">hardened hit rate, n=50 each</div></div>
-  <div class="fig"><div class="figv">160</div><div class="figl">total runs, 60 original + 100 hardening</div></div>
-  <div class="fig"><div class="figv b">4.6&times;</div><div class="figl">slower arrival, hardened medians</div></div>
+  <div class="fig"><div class="figv b">69/70 &middot; 70/70</div><div class="figl">hardened hit rate, n=70 each</div></div>
+  <div class="fig"><div class="figv">200</div><div class="figl">total runs, 60 original + 140 hardening</div></div>
+  <div class="fig"><div class="figv b">4.7&times;</div><div class="figl">slower arrival, hardened medians</div></div>
 </div>
 
 <div class="panel sunk">
@@ -179,14 +179,14 @@ figcaption b {{ color:var(--ink2); }}
     not just session to session.</b> Three real bisections, same session: 3,687&rarr;4,199ms, then
     3,941&rarr;4,252ms ~45min later, then 4,095&rarr;4,393ms ~90min later &mdash; a consistent
     150&ndash;250ms creep each time.</p></div>
-  <div class="find w"><span class="findk">04</span><p><b>Hardened at n=50 each, the finding holds
+  <div class="find w"><span class="findk">04</span><p><b>Hardened at n=70 each, the finding holds
     &mdash; the margin doesn't.</b> CLI's median arrival rose to ~4.7s (from ~1s originally), much
-    closer to the boundary; MCP stayed ~21s. 49/50 CLI hit the bug, 50/50 MCP avoided it &mdash; but
-    the 25&times; arrival gap first measured is really ~4.6&times; under full replication.</p></div>
+    closer to the boundary; MCP stayed ~22s. 69/70 CLI hit the bug, 70/70 MCP avoided it &mdash; but
+    the 25&times; arrival gap first measured is really ~4.7&times; under full replication.</p></div>
   <div class="find"><span class="findk">05</span><p><b>The negative path is raced too.</b> Submitting
     without an email should show a validation error before the real submit. CLI almost never confirms
-    it (0/50) &mdash; that click is fast enough to be swallowed by the same race. MCP always does
-    (50/50) &mdash; its own reasoning time carries it past the window by then.</p></div>
+    it (0/70) &mdash; that click is fast enough to be swallowed by the same race. MCP always does
+    (70/70) &mdash; its own reasoning time carries it past the window by then.</p></div>
   <div class="find"><span class="findk">06</span><p><b>A human tester falls in the slow category
     too</b> &mdash; this defect is structurally invisible to manual testing.</p></div>
   <div class="find"><span class="findk">07</span><p><b>It selects for your fastest users</b> &mdash;
@@ -239,7 +239,7 @@ after click 2 &rarr; listener=2  xhr=["POST .../v3/messages"]</pre>
   <p class="small" style="margin-bottom:6px">Vibium is the verification layer for coding
     agents &mdash; the CLI and the MCP server are two surfaces onto the same daemon and
     browser. Same click, same tool underneath; only how the caller reaches it differs.</p>
-  <p class="small" style="margin-bottom:10px">Hardened n=50 each, 2026-08-04, full 8-step canonical
+  <p class="small" style="margin-bottom:10px">Hardened n=70 each, 2026-08-04, full 8-step canonical
     journey. (1 CLI run excluded: a precondition failure, not counted either way.)</p>
   <div class="runrow">
     <span class="runlab">CLI &middot; ~4.7s to Submit</span>
@@ -247,7 +247,7 @@ after click 2 &rarr; listener=2  xhr=["POST .../v3/messages"]</pre>
     <span class="runrate" style="color:var(--cli)">{cli['hits']}/{cli['total']}</span>
   </div>
   <div class="runrow">
-    <span class="runlab">MCP &middot; ~21.3s to Submit</span>
+    <span class="runlab">MCP &middot; ~22.0s to Submit</span>
     <span class="cells">{''.join(f'<i class="c" style="background:var(--bad)"></i>' for _ in range(mcp['hits']))}{''.join('<i class="c"></i>' for _ in range(mcp['total']-mcp['hits']))}</span>
     <span class="runrate" style="color:var(--bad)">{mcp['hits']}/{mcp['total']}</span>
   </div>
@@ -324,7 +324,7 @@ after click 2 &rarr; listener=2  xhr=["POST .../v3/messages"]</pre>
     Vibium v26.5.31 (CLI + MCP), model claude-sonnet-5 driving the agentic arm; AI also assisted
     drafting and script authoring. Method: an eight-step contact-form journey. Original measurement
     60 runs across 3 sessions, {data['date']}, 480/480 steps passing. Hardened 2026-08-04 with
-    50 CLI + 50 MCP independent runs of the full journey. Full write-up and repro scripts at
+    70 CLI + 70 MCP independent runs of the full journey. Full write-up and repro scripts at
     github.com/lana-20/candy-mapping. Thanks to Paul Grossman for building
     CandyMapper.com and publishing the speed grid reproduced above.</p>
   <p><b>Lana Begunova</b><br>begunova@gmail.com<br>github.com/lana-20/candy-mapping<br>daisyladybug.com</p>

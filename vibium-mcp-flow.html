@@ -143,20 +143,20 @@ sequenceDiagram
       <div class="stage"><b>The loop repeats per step, each one paying the reasoning cost again.</b>
         <p>Navigate, dismiss, fill, click, fill, click — each is its own reasoning-then-tool-call
           round trip. That accumulation, not any single slow step, is why an MCP-driven run
-          reaches the same real submit click roughly 17.5–28.9 seconds after load (hardened,
-          n=50), against the CLI arm's 4.4–5.0 seconds for the identical sequence.</p></div>
+          reaches the same real submit click roughly 17.5–30.1 seconds after load (hardened,
+          n=70), against the CLI arm's 4.4–5.0 seconds for the identical sequence.</p></div>
     </div>
   </div>
 
   <div class="panel">
     <p class="eyebrow">What this costs, measured</p>
     <div class="factrow">
-      <div class="fact"><div class="k">17.5–28.9s</div>
-        <div class="l">arrival time at the real submit click, hardened across 50 real runs
+      <div class="fact"><div class="k">17.5–30.1s</div>
+        <div class="l">arrival time at the real submit click, hardened across 70 real runs
           (2026-08-04) — vs. the CLI arm's 4.4–5.0s for the identical 8-step task.</div></div>
-      <div class="fact"><div class="k">50/50</div>
+      <div class="fact"><div class="k">70/70</div>
         <div class="l">runs where the negative-path assertion (step 6, the validation-error
-          check) actually confirmed — vs. 0/50 for the CLI arm, whose own precondition check
+          check) actually confirmed — vs. 0/70 for the CLI arm, whose own precondition check
           is fast enough to be swallowed by the same race it's testing for.</div></div>
     </div>
     <p style="font-size:13px;color:var(--ink3);margin-top:14px">

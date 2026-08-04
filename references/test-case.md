@@ -40,8 +40,8 @@ not a script defect.
 For `journey_mcp.py` the assertion is unconditional (the agent is instructed to check and
 report, no timeout needed) — the agent's own reasoning time before reaching step 6 is
 already comparable to or longer than the CLI's bounded wait, so this doesn't need the
-same artificial cap. **Confirmed at n=50 each:** CLI reads `true` 0/50 times, MCP reads
-`true` 50/50 times — exactly the predicted asymmetry, not a coincidence of a small sample.
+same artificial cap. **Confirmed at n=70 each:** CLI reads `true` 0/70 times, MCP reads
+`true` 70/70 times — exactly the predicted asymmetry, not a coincidence of a small sample.
 
 ## Audit log
 
@@ -53,17 +53,18 @@ already completed without it. Those 6 runs were archived (not counted) to
 `data/runs/mcp_no_scroll_2026-08-04/`, the prompt fixed, and the batch restarted clean.
 Both scripts now implement all 8 steps; `journey_mcp.py`'s prompt numbers 12 sub-steps
 (splitting fill-first/fill-last and making arm/wait explicit for the agent) but every one
-of the 8 canonical steps is represented.
+of the 8 canonical steps is represented. An initial 50/50 batch was extended to 70/70 the
+same day, same harness (resumable, picked up at run 51 for each arm).
 
-## Final results, 2026-08-04 (n=50 each, clean batches only)
+## Final results, 2026-08-04 (n=70 each, clean batches only)
 
 | | CLI | MCP |
 |---|---|---|
-| result | 49 SWALLOWED / 1 precondition_failed / 0 worked | 50/50 worked |
-| arrival time (median) | 4,684ms | 21,330ms |
-| step 6 confirmed (`validation_confirmed`) | 0/50 | 50/50 |
+| result | 69 SWALLOWED / 1 precondition_failed / 0 worked | 70/70 worked |
+| arrival time (median) | 4,710ms | 21,986ms |
+| step 6 confirmed (`validation_confirmed`) | 0/70 | 70/70 |
 
 Both arms' primary metric (does the real submit in step 8 hit the race) hardened the
-original 30/30-vs-0/30 finding. Full numbers, cost, and the two harness bugs this batch
+original 30/30-vs-0/30 finding. Full numbers and the two harness bugs this batch
 surfaced (rate-limit detection scanning the wrong stream, the missing scroll step) are in
-`timing-methodology.md`'s "100-run hardening pass" section.
+`timing-methodology.md`'s "140-run hardening pass" section.

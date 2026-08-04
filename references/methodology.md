@@ -1,8 +1,8 @@
 # Candy Mapping — methodology
 
 Worked out against the CandyMapper pop-up challenge, July 2026. Sixty benchmark runs plus a
-ten-point delay sweep produced the method below; hardened 2026-08-04 to 100 independent runs
-(50 CLI + 50 MCP) of the full canonical journey — see `timing-methodology.md`'s "100-run
+ten-point delay sweep produced the method below; hardened 2026-08-04 to 140 independent runs
+(70 CLI + 70 MCP) of the full canonical journey — see `timing-methodology.md`'s "140-run
 hardening pass" section for the complete numbers.
 
 ## Why fast automation finds what nothing else can
@@ -18,16 +18,16 @@ past the boundary as proof of drift — that was one data point standing in for 
 overstatement this file's own "Reporting standards" section warns against. Corrected once a
 real second bisection was run instead of trusting the one click.)
 
-On the original hunt the same eight steps were driven two ways; hardened at n=50 each:
+On the original hunt the same eight steps were driven two ways; hardened at n=70 each:
 
-| Driver | Reaches the action | Hit the bug (original, n=30) | Hit the bug (hardened, n=50, 2026-08-04) |
+| Driver | Reaches the action | Hit the bug (original, n=30) | Hit the bug (hardened, n=70, 2026-08-04) |
 |---|---|---|---|
-| Scripted CLI | ~1s originally, ~4.7s median hardened | 30 / 30 | 49 / 50 |
-| Agent-driven MCP | ~25s originally, ~21.3s median hardened | 0 / 30 | 50 / 50 |
+| Scripted CLI | ~1s originally, ~4.7s median hardened | 30 / 30 | 69 / 70 |
+| Agent-driven MCP | ~25s originally, ~22.0s median hardened | 0 / 30 | 70 / 70 |
 
 Same site, same selectors, same browser engine. A human reading labels and moving a mouse is firmly
 in the second category, which is why these defects survive manual test cycles indefinitely. The
-arrival-time *gap* shrank under harder replication (the original ~25× ratio is closer to ~4.6×
+arrival-time *gap* shrank under harder replication (the original ~25× ratio is closer to ~4.7×
 comparing hardened medians) even though the *finding* held — worth stating precisely rather than
 repeating the more dramatic original ratio once a better measurement exists.
 

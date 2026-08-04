@@ -49,7 +49,7 @@ is what's left *after* that, not a duplicate of it.
 ## Already done (2026-08-04), not re-litigate
 
 - All six `PNSQC-PROPOSAL.md` open items (multi-submission policy — moot, attribution
-  wording, easel cross-reference — moot, re-verified 3.7–4.2s window at n=50/50, bio sync
+  wording, easel cross-reference — moot, re-verified 3.7–4.2s window at n=70/70, bio sync
   — moot, cost-tracking decision).
 - Sibling Vibium AX poster archived; this is the sole submission.
 - Abstract trimmed from 644 to 499 words.
@@ -60,3 +60,11 @@ is what's left *after* that, not a duplicate of it.
   `index.html`, and `README.md`.
 - The 2-page handout (see above) — content and layout done; the print-size *test* is not
   (see the open item above, `vibium pdf` can't validate it, needs manual Chrome).
+- **Hardening extended 50/50 → 70/70 the same day** (resumable harness just picked up at
+  run 51 for each arm) — 69/70 CLI, 70/70 MCP, arrival medians 4,710ms/21,986ms, ratio
+  ~4.7× (was ~4.6× at n=50). Propagated everywhere the n=50 figures were published: both
+  poster artifacts, the handout, `PNSQC-PROPOSAL.md` (title alternates too), `README.md`,
+  `index.html`, `references/{timing-methodology,methodology,test-case}.md`,
+  `vibium-mcp-flow.html`, `vibium-test-case-commands.html`. Also caught and fixed a
+  leftover overstated drift claim ("moved by roughly two seconds") in
+  `PNSQC-PROPOSAL.md`'s Framing section that survived the earlier correction pass.
