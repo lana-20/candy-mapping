@@ -133,6 +133,13 @@ project, unlike the CLI arm's table above. Do not treat the two figures as decom
 same kind of time, or try to net one against the other — they measure different machines
 doing different things.
 
+**Why the MCP arm is slower, mechanically:** not the browser layer — both arms pay the
+same ~170–250ms per actual browser action underneath (see the CLI table above). The CLI
+script issues all 8 canonical steps back to back with no thinking between them. The MCP
+agent re-reasons at every one of those 8 steps — reads the previous tool result, decides
+the next tool call, then calls it — so the ~17s gap is 8 stacked reasoning turns, not one
+slow step. `vibium-mcp-flow.html` traces one such turn stage by stage.
+
 **Model/tooling record for the whole experiment** (both arms, confirmed with the author
 2026-08-04 — not previously recorded anywhere in the repo, article, or `SKILL.md`):
 

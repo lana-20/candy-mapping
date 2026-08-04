@@ -86,8 +86,13 @@ Across sixty original benchmark runs the same eight steps were driven two ways, 
 
 Same site, same selectors, same browser engine. Only arrival time differs — which is why a human
 moving a mouse never sees it, and why the defect selects for your fastest users, the ones whose
-browser autofills the form. The arrival-time *gap* shrank under harder replication (original ~25×,
-hardened medians ~4.6×) even as the finding itself held — see
+browser autofills the form. The gap isn't the browser layer — both arms pay the same
+~170–250ms per actual action underneath. The CLI script issues all 8 steps back to back with no
+thinking between them; the MCP agent re-reasons at every one of those 8 steps, so the gap is 8
+stacked reasoning turns, not one slow step — see
+[`vibium-mcp-flow.html`](https://lana-20.github.io/candy-mapping/vibium-mcp-flow.html) for one
+turn traced stage by stage. The arrival-time *gap* shrank under harder replication (original
+~25×, hardened medians ~4.6×) even as the finding itself held — see
 [`references/test-case.md`](references/test-case.md) for the exact 8-step sequence both arms now
 run, and [`references/timing-methodology.md`](references/timing-methodology.md) for the full
 hardened numbers, and two harness bugs the hardening pass caught along the

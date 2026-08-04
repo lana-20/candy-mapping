@@ -21,6 +21,15 @@ and eight hidden references. Grossman also publishes a public speed grid compari
 commercial testing tools' build-time vs run-time on the same challenge, which gives this
 poster an existing community context to plug into.
 
+**The tool.** Vibium (OSS browser automation) exposes two surfaces built to be driven by
+a model: a **CLI** for deterministic, scripted automation, and an **MCP server** that
+gives a coding agent the same browser control as a first-class tool call — Vibium as the
+verification layer for coding agents, the way a debugger or a linter is a verification
+layer for a human. This poster compares the two surfaces' natural pace against the same
+browser action, not their tool logic: the CLI issues a raw `.click()`, the MCP arm reasons
+about each step and calls the identical underlying action. Same daemon, same
+Chrome-for-Testing build, same click — the only variable is how the caller gets there.
+
 **The finding.** One of the form's defects is invisible to slow testing by construction,
 not by accident. The Submit button is clickable before its own handler finishes wiring
 up. The first click after page load registers on a capture-phase listener and is silently
@@ -44,6 +53,14 @@ The finding held under harder replication; the margin did not — the 25× arriv
 measured is really ~4.6× once the boundary itself is accounted for (see below). A human
 moving a mouse falls in the same slow category and structurally cannot see this defect
 either.
+
+**Why MCP is slower, mechanically** (poster/methods framing, not for the abstract's word
+budget): not the browser layer — both arms pay the same ~170–250ms per actual browser
+action underneath. The CLI script issues all 8 steps back to back with no thinking between
+them. The MCP agent re-reasons at every one of those 8 steps — reads the previous tool
+result, decides the next tool call, then calls it — so the gap is 8 stacked reasoning
+turns, not one slow step. See `references/timing-methodology.md` and
+`vibium-mcp-flow.html` (traces one such turn stage by stage) in the main repo.
 
 **The boundary is not fixed.** Re-bisected properly (multiple probes, not one click) twice
 more in the same 2026-08-04 session: 3,941→4,252ms after ~45 minutes, 4,095→4,393ms after
@@ -80,12 +97,12 @@ framed as safer testing, here erases an entire defect class.
 
 ---
 
-## Abstract (draft, ~480 words)
+## Abstract (499 words)
 
 CandyMapper.com is a sandbox built by tester Paul Grossman specifically to be broken: a
 contact form wrapped around eleven planted defects and eight hidden references, daring
-testers to find them by hand or by tool. One of those defects turned out to be invisible
-to slower testers by construction, not by accident.
+testers to find them by hand or by tool. One of those defects is invisible to slower
+testers by construction, not by accident.
 
 The contact form's Submit button is clickable before its handler finishes wiring up. The
 first click after page load lands, registers on a capture-phase listener, and is silently
@@ -93,48 +110,41 @@ discarded — no error, no network request, nothing a user or a validator would 
 Click again and it works. A plain `element.click()` typed into the console reproduces it,
 ruling out an automation artefact.
 
-I measured the window directly: repeated submissions at increasing delays after load
-locate a sharp boundary, originally 3.7–4.2 seconds. Below it, every click is swallowed.
-Above it, every click succeeds. It is a deterministic race with a millisecond-precise
-edge — but the edge itself is not fixed. Re-bisecting properly (a full sweep, not a
-single click) twice more in the same session found the window at 3.9–4.3 seconds after
-about 45 minutes, then 4.1–4.4 seconds after about 90 — a consistent 150–250ms creep each
-time. The boundary drifts within a single session, not only session to session, modestly
-and repeatably.
+I measured the window directly: repeated submissions at increasing delays locate a sharp
+boundary, originally 3.7–4.2 seconds — below it every click is swallowed, above it every
+click succeeds, a deterministic race with a millisecond-precise edge. But the edge moves:
+re-bisecting properly (a full sweep, not one click) twice more in the same session found
+it creeping forward 150–250ms each time, to 4.1–4.4 seconds 90 minutes later. It drifts
+within a single session, not only session to session.
 
-I drove the same eight-step journey sixty times, split evenly between a scripted Vibium
-CLI runner and an agent-driven Vibium MCP session — same site, same selectors, same
-browser build. The scripted runner reached Submit about a second after filling the form,
-always inside the window: it hit the bug 30 times out of 30. The MCP agent, deliberating
-over each step, took roughly 25 seconds to arrive — always outside the window: it hit the
-bug 0 times out of 30.
+I drove the same eight-step journey through Vibium — the verification layer for coding
+agents — on both its surfaces: a scripted CLI runner and an agent-driven MCP session, same
+site, same selectors, same browser build. An original 60-run pass found CLI always inside
+the window (30/30), MCP always outside it (0/30). Hardened to 100 independent runs of the
+fuller journey on a separate day, the finding held while its margin narrowed: CLI's
+median arrival rose to ~4.7s, still inside the moved window (49/50); MCP held near 21s,
+outside it (50/50). The 25× arrival gap first measured is closer to 4.6× once the
+boundary's own drift is accounted for.
 
-Then I hardened it: 100 independent runs (50 CLI, 50 MCP) of the full canonical journey,
-a separate day. The scripted runner's median arrival rose to ~4.7 seconds — inside the
-(moved) window 49 times out of 50. The agent's median arrival held near 21 seconds —
-outside it, 50 times out of 50. The finding survived harder replication; its margin did
-not. The 25× arrival gap first measured is closer to 4.6× once the boundary's own drift
-is accounted for — a real result, and a caution against quoting a single ratio as if it
-were a property of the tools rather than a snapshot of one measurement moment.
+Why MCP is slower isn't the browser layer, paid identically by both — it's 8 stacked
+reasoning turns, one per step, against a script issuing all 8 back to back.
 
-A second, quieter race turned up along the way: submitting with no email should show a
-validation error before the real submit — the negative path a careful tester would check
-first. The CLI's own attempt at that click is fast enough to be swallowed by the identical
-race (confirmed 0 of 50 times); the agent's is not (confirmed 50 of 50). Even a scripted
-test's own precondition check can be the thing the bug hides from.
+A second, quieter race turned up: submitting with no email should show a validation error
+before the real submit, the negative path a careful tester checks first. The CLI's own
+attempt at that click is fast enough to be swallowed by the identical race (0/50
+confirmed); the agent's is not (50/50). Even a test's own precondition check can be what
+the bug hides from.
 
-That inverts an intuition "Quality in the Age of Autonomy" invites: more deliberation is
-usually framed as safer testing. Here, deliberation cost the tester an entire class of
-defect — while simultaneously being the only thing reliable enough to verify its own
-negative-path assertion. Test speed is not a CI line item — it is the aperture that
-decides which hydration and startup races a suite can even perceive, and which of a
-suite's own checks it can trust.
+That inverts an intuition "Quality in the Age of Autonomy" invites: deliberation is
+usually framed as safer testing. Here it cost an entire class of defect while being the
+only thing reliable enough to verify its own negative-path assertion. Test speed is the
+aperture deciding which hydration races a suite can perceive, and which of its own checks
+it can trust.
 
-I will bring the raw timing data from both measurement passes, the attribution technique
-that proves the page — not the tooling — is at fault, and a live two-minute repro anyone
-can run against their own site: cold cache, fill the two required fields, click Submit
-under four seconds, watch the network. I will also show how the probe/attribute/bisect
-method generalizes beyond this one bug to any suspected startup race.
+I will bring the raw timing data, the attribution technique proving the page — not the
+tooling — is at fault, a live two-minute repro (cold cache, fill two fields, Submit under
+four seconds, watch the network), and how probe/attribute/bisect generalizes to any
+suspected startup race.
 
 ---
 

@@ -309,6 +309,10 @@ after click 2 &rarr; listener=2  xhr=["POST .../v3/messages"]</pre>
     <div class="panel">
       <p class="eyebrow">Result &mdash; the comparison</p>
       <h2>Same site. Only arrival time differs.</h2>
+      <p class="small" style="margin-bottom:3mm">Vibium is the verification layer for
+        coding agents &mdash; the CLI and the MCP server are two surfaces onto the same
+        daemon and browser. Same click, same tool underneath; only how the caller reaches
+        it differs.</p>
       <div class="runrow">
         <span class="runlab">CLI &middot; ~4.7s to Submit</span>
         {run_strip(cli['hits'], cli['total'], 'var(--cli)')}
@@ -323,6 +327,11 @@ after click 2 &rarr; listener=2  xhr=["POST .../v3/messages"]</pre>
         journey. Same selectors, same browser build. Nothing about the agent's judgment was at fault
         &mdash; it simply arrived too late, every time. (1 CLI run excluded: a precondition failure,
         not counted either way.)</p>
+      <p class="small" style="margin-top:2mm"><b>Why MCP is slower:</b> not the browser &mdash; both
+        arms pay the same ~170&ndash;250ms per actual action underneath. The CLI script issues all
+        8 steps back to back with no thinking between them. The MCP agent re-reasons at every one of
+        those 8 steps &mdash; reads the last result, decides the next tool call, then calls it &mdash;
+        so the gap is 8 stacked reasoning turns, not one slow step.</p>
     </div>
     <div class="panel">
       <p class="eyebrow">Result &mdash; the fix</p>

@@ -664,6 +664,12 @@ click at t+22364ms after load → <span class="g">worked</span></pre>
       about 4.7 seconds (from about 1 originally), landing much closer to the boundary; MCP's stayed
       close to 21 seconds. The 25× arrival gap first published above is closer to 4.6× comparing
       hardened medians.</p>
+    <p>Why MCP is slower is not the browser layer — both arms pay the same roughly 170–250ms per
+      actual browser action underneath. The CLI script issues all 8 steps back to back with no
+      thinking between them. The MCP agent re-reasons at every one of those 8 steps — reads the
+      previous tool result, decides the next tool call, then calls it — so the gap is 8 stacked
+      reasoning turns, not one slow step. <a href="vibium-mcp-flow.html">vibium-mcp-flow.html</a>
+      traces one such turn stage by stage.</p>
     <p>The boundary itself moved too — confirmed properly, by re-bisecting twice more in the
       same session, not by trusting a single click. First bisection: 3,687→4,199ms. Re-bisected
       about 45 minutes later: 3,941→4,252ms. Re-bisected again about 90 minutes after that:
