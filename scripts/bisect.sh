@@ -7,12 +7,21 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 PROBE="$HERE/probe.sh"
 MAX="${1:-20000}"
 
+# probe.sh exit codes: 0 worked, 1 SWALLOWED, 2 precondition_failed. A bare `if` treats
+# 1 and 2 identically (both non-zero/falsy) — that silently recorded a fill failure as a
+# real SWALLOWED measurement once already (2026-08-04), which didn't corrupt that run's
+# final answer only because the corrupted point wasn't one of the two edges actually
+# used. Check the exit code explicitly instead of trusting truthiness.
 echo "── coarse sweep ──────────────────────────────────────────"
 LAST_FAIL=-1
 FIRST_PASS=-1
 for d in 0 2000 5000 10000 "$MAX"; do
   [ "$d" -gt "$MAX" ] && continue
-  if bash "$PROBE" "$d"; then
+  bash "$PROBE" "$d"; rc=$?
+  if [ "$rc" -eq 2 ]; then
+    echo "  precondition failed at delay ${d}ms — fix the locator before bisecting, not a timing result"
+    exit 2
+  elif [ "$rc" -eq 0 ]; then
     FIRST_PASS=$d; break
   else
     LAST_FAIL=$d
@@ -33,7 +42,11 @@ echo
 echo "── bisect between ${LAST_FAIL}ms and ${FIRST_PASS}ms ─────"
 while [ $(( FIRST_PASS - LAST_FAIL )) -gt 400 ]; do
   MID=$(( (LAST_FAIL + FIRST_PASS) / 2 ))
-  if bash "$PROBE" "$MID"; then FIRST_PASS=$MID; else LAST_FAIL=$MID; fi
+  bash "$PROBE" "$MID"; rc=$?
+  if [ "$rc" -eq 2 ]; then
+    echo "  precondition failed at delay ${MID}ms — fix the locator before bisecting, not a timing result"
+    exit 2
+  elif [ "$rc" -eq 0 ]; then FIRST_PASS=$MID; else LAST_FAIL=$MID; fi
 done
 
 echo

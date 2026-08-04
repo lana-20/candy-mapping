@@ -185,7 +185,7 @@ footer b {{ color:var(--ink); }}
       </div>
     </div>
     <div class="figs">
-      <div class="fig"><div class="figv a">3.7&ndash;6.1s</div><div class="figl">vulnerability window<br>moves within a session &mdash; not fixed</div></div>
+      <div class="fig"><div class="figv a">3.7&ndash;4.4s</div><div class="figl">vulnerability window<br>moves within a session &mdash; not fixed</div></div>
       <div class="fig"><div class="figv b">49/50 &middot; 50/50</div><div class="figl">hardened hit rate, n=50 each<br>2026-08-04, full 8-step journey</div></div>
       <div class="fig"><div class="figv">160</div><div class="figl">total benchmark runs<br>60 original + 100 hardening</div></div>
       <div class="fig"><div class="figv b">4.6&times;</div><div class="figl">slower arrival at Submit, hardened<br>21.3s (MCP) vs 4.7s (CLI) medians</div></div>
@@ -204,9 +204,10 @@ footer b {{ color:var(--ink); }}
       capture-phase listener plus a network hook show the click was received and then ignored; a bare
       <code>element.click()</code> in the console reproduces it.</p></div>
     <div class="find w"><span class="findk">03</span><p><b>The boundary drifts within a single session,
-      not just session to session.</b> Originally 3,687&rarr;4,199ms; re-bisected ~30 minutes later in
-      the same session, a zero-interaction control click was still swallowed at 6,054ms. Quote a range
-      measured close to publication, never a fixed constant.</p></div>
+      not just session to session.</b> Three real bisections, same session: 3,687&rarr;4,199ms,
+      then 3,941&rarr;4,252ms ~45min later, then 4,095&rarr;4,393ms ~90min later &mdash; a consistent
+      150&ndash;250ms creep each time. Quote a range measured close to publication, never a fixed
+      constant.</p></div>
     <div class="find w"><span class="findk">04</span><p><b>Hardened at n=50 each, the finding holds &mdash;
       the margin doesn't.</b> CLI's median arrival rose to ~4.7s (up from ~1s), landing much closer to
       the boundary than originally measured; MCP stayed ~21s. 49/50 CLI runs still hit the bug, 50/50

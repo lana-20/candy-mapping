@@ -664,11 +664,13 @@ click at t+22364ms after load → <span class="g">worked</span></pre>
       about 4.7 seconds (from about 1 originally), landing much closer to the boundary; MCP's stayed
       close to 21 seconds. The 25× arrival gap first published above is closer to 4.6× comparing
       hardened medians.</p>
-    <p>The boundary itself moved too. Re-bisected in the same 2026-08-04 session, roughly 30
-      minutes after confirming success at 4,199ms, a plain click with no prior interaction was
-      still swallowed at 6,054ms. The window drifts within a single session, not only session to
-      session — treat any published bracket as a snapshot of the moment it was measured, not a
-      constant to check new data against later.</p>
+    <p>The boundary itself moved too — confirmed properly, by re-bisecting twice more in the
+      same session, not by trusting a single click. First bisection: 3,687→4,199ms. Re-bisected
+      about 45 minutes later: 3,941→4,252ms. Re-bisected again about 90 minutes after that:
+      4,095→4,393ms. A consistent 150–250ms creep each time — the window drifts within a single
+      session, not only session to session, modestly and repeatably. Treat any published bracket
+      as a snapshot of the moment it was measured, not a constant to check new data against
+      later.</p>
     <p>A second race turned up along the way: the validation-error click (submitting with no
       email) is itself subject to the identical startup race. The CLI's own attempt at it is fast
       enough to be swallowed too — confirmed <em>false</em> 0 of 50 times. The MCP agent's

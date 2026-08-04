@@ -9,10 +9,14 @@ hardening pass" section for the complete numbers.
 
 A startup race is deterministic at any given moment — whether a click lands depends entirely
 on its timing relative to the page's own wiring-up, not on chance. It is **not**, however, a
-fixed interval: the hardening pass found the boundary itself drifts within a single session
-(confirmed — a zero-interaction control click was swallowed nearly two seconds past a boundary
-re-bisected just ~30 minutes earlier). Deterministic and drifting are not a contradiction; treat
-any measured window as a snapshot, not a constant.
+fixed interval: the hardening pass found the boundary itself drifts within a single session —
+confirmed by three real bisections across one session (3.7–4.2s, then 3.9–4.3s ~45 minutes
+later, then 4.1–4.4s ~90 minutes later), a consistent ~150–250ms creep each time. Deterministic
+and drifting are not a contradiction; treat any measured window as a snapshot, not a constant.
+(An earlier version of this finding cited a single control click swallowed nearly two seconds
+past the boundary as proof of drift — that was one data point standing in for a bisection, an
+overstatement this file's own "Reporting standards" section warns against. Corrected once a
+real second bisection was run instead of trusting the one click.)
 
 On the original hunt the same eight steps were driven two ways; hardened at n=50 each:
 

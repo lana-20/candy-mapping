@@ -46,10 +46,11 @@ measured is really ~4.6× once the boundary itself is accounted for (see below).
 moving a mouse falls in the same slow category and structurally cannot see this defect
 either.
 
-**The boundary is not fixed.** Re-bisected in the same 2026-08-04 session, ~30 minutes
-after confirming success at 4,252ms, a zero-interaction control click was still swallowed
-at 6,054ms. The window drifts within a single session, not just session to session — a
-finding as worth presenting as the original race itself.
+**The boundary is not fixed.** Re-bisected properly (multiple probes, not one click) twice
+more in the same 2026-08-04 session: 3,941→4,252ms after ~45 minutes, 4,095→4,393ms after
+~90 minutes — a consistent ~150–250ms creep each time. The window drifts within a single
+session, not just session to session, modestly and repeatably — a finding as worth
+presenting as the original race itself.
 
 **Positioning.** Vibium is presented purely as open source, no commercial framing —
 consistent with the sibling poster's rules. The live demo is the two-minute repro: cold
@@ -91,10 +92,11 @@ ruling out an automation artefact.
 I measured the window directly: repeated submissions at increasing delays after load
 locate a sharp boundary, originally 3.7–4.2 seconds. Below it, every click is swallowed.
 Above it, every click succeeds. It is a deterministic race with a millisecond-precise
-edge — but the edge itself is not fixed. Re-bisecting roughly 30 minutes later, in the
-same session, found a zero-interaction control click still swallowed nearly two seconds
-past the earlier confirmed success point. The boundary drifts within a single session,
-not only session to session.
+edge — but the edge itself is not fixed. Re-bisecting properly (a full sweep, not a
+single click) twice more in the same session found the window at 3.9–4.3 seconds after
+about 45 minutes, then 4.1–4.4 seconds after about 90 — a consistent 150–250ms creep each
+time. The boundary drifts within a single session, not only session to session, modestly
+and repeatably.
 
 I drove the same eight-step journey sixty times, split evenly between a scripted Vibium
 CLI runner and an agent-driven Vibium MCP session — same site, same selectors, same

@@ -57,9 +57,10 @@ listener never fires, the click missed the element and your locator is wrong —
 
 On the reference target, the window was originally measured at **3.7–4.2 seconds** after page
 load — a click at 3,687ms discarded, one at 4,199ms through, reproducing on both sides. Hardened
-2026-08-04: the boundary **drifts within a single session**, not just session to session — a
-re-bisection ~30 minutes later found a zero-interaction control click still swallowed at 6,054ms.
-Treat any published window as a snapshot, not a constant — see
+2026-08-04 with two further real bisections in the same session (3.9–4.3s, then 4.1–4.4s): the
+boundary **drifts within a single session**, not just session to session, by roughly 150–250ms
+per re-measurement — modest, and confirmed by actual bisections, not a single click. Treat any
+published window as a snapshot, not a constant — see
 [`references/timing-methodology.md`](references/timing-methodology.md).
 
 Across sixty original benchmark runs the same eight steps were driven two ways, hardened

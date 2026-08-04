@@ -116,7 +116,7 @@ figcaption b { color:var(--ink2); }
 </div>
 
 <div class="figs">
-  <div class="fig"><div class="figv a">3.7&ndash;6.1s</div><div class="figl">vulnerability window, moves within a session</div></div>
+  <div class="fig"><div class="figv a">3.7&ndash;4.4s</div><div class="figl">vulnerability window, moves within a session</div></div>
   <div class="fig"><div class="figv b">49/50 &middot; 50/50</div><div class="figl">hardened hit rate, n=50 each</div></div>
   <div class="fig"><div class="figv">160</div><div class="figl">total runs, 60 original + 100 hardening</div></div>
   <div class="fig"><div class="figv b">4.6&times;</div><div class="figl">slower arrival, hardened medians</div></div>
@@ -132,8 +132,9 @@ figcaption b { color:var(--ink2); }
     &mdash; a capture-phase listener plus a network hook show the click was received and ignored; a
     bare <code>element.click()</code> reproduces it.</p></div>
   <div class="find w"><span class="findk">03</span><p><b>The boundary drifts within a single session,
-    not just session to session.</b> Originally 3,687&rarr;4,199ms; re-bisected ~30 minutes later in
-    the same session, a zero-interaction control click was still swallowed at 6,054ms.</p></div>
+    not just session to session.</b> Three real bisections, same session: 3,687&rarr;4,199ms, then
+    3,941&rarr;4,252ms ~45min later, then 4,095&rarr;4,393ms ~90min later &mdash; a consistent
+    150&ndash;250ms creep each time.</p></div>
   <div class="find w"><span class="findk">04</span><p><b>Hardened at n=50 each, the finding holds
     &mdash; the margin doesn't.</b> CLI's median arrival rose to ~4.7s (from ~1s originally), much
     closer to the boundary; MCP stayed ~21s. 49/50 CLI hit the bug, 50/50 MCP avoided it &mdash; but

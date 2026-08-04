@@ -12,7 +12,7 @@
     {"ms": 22364, "result": "worked"}
   ],
   "boundary": {"discard_ms": 3687, "success_ms": 4199, "window_lo": 3.7, "window_hi": 4.2},
-  "boundary_note": "The boundary is not a fixed constant — re-bisected 2026-08-04 in the same session and found it had already moved (discard confirmed up to 6,054ms, ~2s later than the figure above, with zero prior interaction). Quote a range measured close to publication time, not this snapshot, as exact.",
+  "boundary_note": "The boundary is not a fixed constant — re-bisected properly (multiple probes) twice more in the same 2026-08-04 session: 3941-4252ms after ~45min, 4095-4393ms after ~90min. A consistent ~150-250ms creep each time. Quote a range measured close to publication time, not this snapshot, as exact.",
   "runs": {
     "cli":  {"label": "Scripted CLI", "arrival_s": 1,  "hits": 30, "total": 30},
     "mcp":  {"label": "Agent-driven MCP", "arrival_s": 25, "hits": 0, "total": 30}

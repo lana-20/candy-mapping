@@ -204,22 +204,46 @@ reassuring: the boundary hadn't moved dramatically, consistent with `methodology
 standing note that absolute timings drift session to session but behavioral findings
 hold.
 
-**That reassurance didn't survive the same session.** ~30–45 minutes later, building the
-100-run journey harness, a plain single click with zero prior interaction — no submit #1,
-no extra steps, nothing that could plausibly "reset" anything — was fired at **t+6,054ms**
-and was still **SWALLOWED**. That's nearly two seconds past the success boundary just
-confirmed above. Ruled out interaction-based explanations directly (tested whether a
-raced submit #1 click extends the window for a later click — it doesn't need to, since
-this control had no prior click at all). The only remaining explanation is that **the
-boundary itself drifted meaningfully within a single continuous session**, not just
-session to session as previously documented.
+**That reassurance needed a real second measurement, not one click, to actually mean
+anything — and the first attempt at "confirming" drift got exactly that wrong.**
+~30–45 minutes later, building the 100-run journey harness, a plain single click with
+zero prior interaction was fired at t+6,054ms and was still SWALLOWED. That single point
+was written up here as proof the boundary had moved nearly two seconds — a single sample
+being treated as if it were a re-bisection, the precise mistake this document's own
+"Reporting standards" section (in `methodology.md`) warns against. It sat published,
+uncorrected, across six files and two commits before being checked.
+
+**Properly re-bisected (multiple probes, not one click), 2026-08-04, ~90 minutes into
+the session: last discard at t+4,095ms, first success at t+4,393ms.** Three real
+bisections across this one session now exist:
+
+| When | Discard → success |
+|---|---|
+| Original, 2026-07-27 | 3,687ms → 4,199ms |
+| Re-bisected, ~45 min into this session | 3,941ms → 4,252ms |
+| Re-bisected, ~90 min into this session | 4,095ms → 4,393ms |
+
+**The finding is real, and it is modest.** A consistent ~150–250ms creep per
+re-measurement, same direction each time — genuine within-session drift, not the ~1.9s
+jump the single control click implied. That click was very likely an outlier (network
+jitter, a slow individual page load) rather than a representative sample of where the
+boundary actually sat at that moment. `scripts/bisect.sh` also had a real bug found
+during this re-measurement — its coarse sweep didn't distinguish a precondition failure
+(fill didn't register) from a genuine SWALLOWED, so a corrupted probe could silently
+enter the bracket; fixed to check the exit code explicitly instead of relying on bash
+truthiness.
 
 **Consequence for how to read every millisecond figure in this project:** treat any
 bisected boundary as a snapshot valid for roughly the session in which it was measured,
-not a stable constant to check new data against later. If you need a boundary to compare
-against, re-bisect immediately before, not 30 minutes before. Quoting one to the exact
-millisecond ("3,687ms discards, 4,199ms succeeds") remains true of the moment it was
-measured — it is not a fact about the site that holds for the rest of the day.
+not a stable constant to check new data against later — the drift is real, if modest.
+Separately, and just as important: **one probe is a data point, not a bisection.** A
+single click confirms nothing about a boundary on its own; only a real multi-probe
+bisection does. If you need a boundary to compare against, re-bisect properly immediately
+before, not 30 minutes before, and don't let a single control click stand in for one.
+Quoting a bracket to the exact millisecond ("3,687ms discards, 4,199ms succeeds") remains
+true of the moment it was measured — it is not a fact about the site that holds for the
+rest of the day, and it should never rest on fewer than the several probes a real
+bisection requires.
 
 ## Reproducing / verifying this
 
