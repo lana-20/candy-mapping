@@ -148,6 +148,41 @@ This table existed only as an unverified guess in the poster's disclosure footer
 written there without a confirmed source. It has since been confirmed and now has a home;
 treat this file, not the poster footer, as the source of record if the two ever disagree.
 
+## The 100-run hardening pass, 2026-08-04
+
+Independent of the original 60-run benchmark above — different date, fuller step
+sequence (`references/test-case.md`'s canonical 8 steps, including the scroll step and
+the negative-path assertion neither original arm explicitly checked), model pinned to
+`claude-sonnet-5`. Full harness: `scripts/journey_cli.sh`, `scripts/journey_mcp.py`,
+resumable, one JSON per run under `data/runs/{cli,mcp}/`.
+
+| | CLI (n=50) | MCP (n=50) |
+|---|---|---|
+| result | 49 SWALLOWED / 1 precondition_failed / 0 worked | 50/50 worked |
+| arrival time | min 4,430ms · max 5,042ms · median 4,684ms · mean 4,701ms (stdev 129ms) | min 17,480ms · max 28,881ms · median 21,330ms · mean 21,856ms (stdev 2,401ms) |
+| negative path confirmed (`validation_confirmed`) | 0/50 | 50/50 |
+| real cost | $0 (no model) | $11.71 |
+
+**Arrival gap, recomputed:** 21,330 / 4,684 ≈ **4.6×** (medians) — down from the original
+25× (25s / 1s). Not a contradiction: the original figure compared a first-pass ~1s CLI
+arrival against ~25s MCP: two numbers from a leaner 2-field flow, an earlier session, and
+(per the drift finding below) a since-moved boundary. The hardened figure compares the
+full canonical journey, same session, same day. Both are real measurements of different
+things; quote whichever one matches what's actually being compared.
+
+**Two clean-batch discipline notes, both costly to learn:** (1) the account's 5-hour
+session usage limit was hit mid-batch once; `claude -p` reports this as a structured
+*stdout* event (`{"type":"rate_limit_event","rate_limit_info":{"status":"rejected",...}}`),
+not stderr — `journey_mcp.py`'s original FATAL check only scanned stderr, so 28 calls ran
+to instant, zero-cost failure before this was caught. Fixed to scan both, and to match on
+the event's own `status` field rather than substrings that also appear on healthy runs
+(`overageStatus`/`out_of_credits` are static account properties present in every run,
+successful or not — an early, broader regex false-positived on run 1 of the very next
+batch). (2) `journey_mcp.py`'s prompt omitted the canonical flow's scroll step in its
+first version; caught after 6 real paid runs had already completed without it. Both
+incidents' junk/incomplete runs were archived, not deleted or silently kept — see
+`data/runs/mcp_no_scroll_2026-08-04/` and `data/runs/_rejected/rate_limit_2026-08-04/`.
+
 ## Precision this mechanism can actually defend
 
 - Individual click timestamps: sub-millisecond, relative to page navigation start.

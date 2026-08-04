@@ -1,0 +1,8 @@
+{
+  "run": 4,
+  "ts_start": "2026-08-04T04:15:08.260907+00:00",
+  "arrival_ms": 4853,
+  "wall_ms": 9416,
+  "result": "SWALLOWED",
+  "validation_confirmed": false
+}

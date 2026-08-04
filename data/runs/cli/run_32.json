@@ -1,0 +1,8 @@
+{
+  "run": 32,
+  "ts_start": "2026-08-04T04:21:28.796619+00:00",
+  "arrival_ms": null,
+  "wall_ms": null,
+  "result": "precondition_failed",
+  "validation_confirmed": false
+}

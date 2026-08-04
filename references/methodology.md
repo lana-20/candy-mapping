@@ -1,22 +1,31 @@
 # Candy Mapping — methodology
 
 Worked out against the CandyMapper pop-up challenge, July 2026. Sixty benchmark runs plus a
-ten-point delay sweep produced the method below.
+ten-point delay sweep produced the method below; hardened 2026-08-04 to 100 independent runs
+(50 CLI + 50 MCP) of the full canonical journey — see `timing-methodology.md`'s "100-run
+hardening pass" section for the complete numbers.
 
 ## Why fast automation finds what nothing else can
 
-A startup race is not flaky. It is perfectly deterministic — the page is vulnerable for a fixed
-interval after load, and whether you see the defect depends entirely on when your click arrives.
+A startup race is deterministic at any given moment — whether a click lands depends entirely
+on its timing relative to the page's own wiring-up, not on chance. It is **not**, however, a
+fixed interval: the hardening pass found the boundary itself drifts within a single session
+(confirmed — a zero-interaction control click was swallowed nearly two seconds past a boundary
+re-bisected just ~30 minutes earlier). Deterministic and drifting are not a contradiction; treat
+any measured window as a snapshot, not a constant.
 
-On the original hunt the same eight steps were driven two ways:
+On the original hunt the same eight steps were driven two ways; hardened at n=50 each:
 
-| Driver | Reaches the action | Hit the bug |
-|---|---|---|
-| Scripted CLI | ~1s after filling | 30 / 30 runs |
-| Agent-driven MCP | ~25s after filling | 0 / 30 runs |
+| Driver | Reaches the action | Hit the bug (original, n=30) | Hit the bug (hardened, n=50, 2026-08-04) |
+|---|---|---|---|
+| Scripted CLI | ~1s originally, ~4.7s median hardened | 30 / 30 | 49 / 50 |
+| Agent-driven MCP | ~25s originally, ~21.3s median hardened | 0 / 30 | 50 / 50 |
 
 Same site, same selectors, same browser engine. A human reading labels and moving a mouse is firmly
-in the second category, which is why these defects survive manual test cycles indefinitely.
+in the second category, which is why these defects survive manual test cycles indefinitely. The
+arrival-time *gap* shrank under harder replication (the original ~25× ratio is closer to ~4.6×
+comparing hardened medians) even though the *finding* held — worth stating precisely rather than
+repeating the more dramatic original ratio once a better measurement exists.
 
 The corollary matters for tool choice: if everything in a pipeline is slow, an entire category of
 hydration and startup races sits outside its field of view. Keep something fast in the suite.
@@ -78,7 +87,10 @@ confirmed is the easiest way to lose a reader who checks.
 
 Run the whole hunt in a fresh session before publishing. Behavioural findings reproduce; absolute
 timings drift. On the original work every behavioural finding held across three sessions while every
-timing figure moved, one of them by 40%.
+timing figure moved, one of them by 40%. **The 2026-08-04 hardening pass found this drift is not
+even bounded by session** — a boundary re-bisected mid-session had already moved by the time the
+next measurement was taken, ~30 minutes later. Re-bisect immediately before publishing a number, not
+just once per session.
 
 If a grid or benchmark tempts you to imply that other tools miss the bug — measure the window and
 publish it as a self-check instead. A falsifiable threshold anyone can test in two minutes is a much

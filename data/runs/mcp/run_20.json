@@ -1,0 +1,11 @@
+{
+  "run": 20,
+  "ts_start": "2026-08-04T03:48:49.852725+00:00",
+  "model": "claude-sonnet-5",
+  "arrival_ms": 22155,
+  "wall_ms": 40942,
+  "cost_usd": 0.2531069,
+  "rc": 0,
+  "validation_confirmed": true,
+  "result": "worked"
+}
