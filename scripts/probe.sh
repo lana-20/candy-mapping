@@ -40,8 +40,16 @@ $V eval 'window.__hit="";window.__before=document.body.innerText;
 
 [ "$DELAY_MS" -gt 0 ] && $V sleep "$DELAY_MS" >/dev/null
 
-AGE=$($V eval 'Math.round(performance.now())')
-$V click "$ACTION" >/dev/null
+# Timestamp and click MUST be one eval call, not two CLI commands. Two commands means a
+# separate round-trip (measured ~170-250ms on this machine) sits unaccounted-for between
+# "the time we recorded" and "the click that actually reached the page" — noise on the
+# same order as the boundary itself. One call means the page's own clock reads itself in
+# the same tick it dispatches the click: no gap to account for.
+# Trade-off: this bypasses vibium's actionability checks (visibility, scroll-into-view,
+# obscured-element detection) that `$V click` normally does. Acceptable here because the
+# button is already in view by this point in the flow — not acceptable if you reuse this
+# pattern somewhere the target might not be interactable yet.
+AGE=$($V eval "(()=>{const t=Math.round(performance.now());document.querySelector('${ACTION}').click();return t})()")
 $V sleep 3000 >/dev/null
 
 RESULT=$($V eval '(()=>{const re=new RegExp("'"$SUCCESS"'","i");

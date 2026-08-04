@@ -58,9 +58,15 @@ check that they are actually independent.
 page load of a fresh browser is materially slower than subsequent ones — on the reference target,
 ~2.6s versus ~1.1s — so never compare a first run against later ones.
 
-**Process spawn is not free but it is not the story either.** The CLI costs ~120ms per invocation.
+**Process spawn is not free but it is not the story either.** The CLI costs ~120–250ms per invocation.
 Across a 27-command script that is ~3s, which is real but dwarfed by network and the site's own
 response time. Do not over-optimise the harness before measuring where the time goes.
+
+That said, this overhead is *not* negligible everywhere — see `timing-methodology.md` for the one
+place it actually mattered: `probe.sh` originally split "read the clock" and "fire the click" across
+two CLI calls, leaving one call's worth of round-trip (170–250ms) unaccounted for inside a boundary
+that was only ~512ms wide. Fixed by moving both into a single `eval`. The general rule above still
+holds for everything that isn't the measurement itself.
 
 ## Reporting standards
 
