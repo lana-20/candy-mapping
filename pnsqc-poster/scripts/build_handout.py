@@ -41,7 +41,7 @@ def main():
 
     html = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<title>Handout — The Window Is Four Seconds Wide — PNSQC 2026</title>
+<title>Handout — Quality in the Age of Autonomy — PNSQC 2026</title>
 <style>
 @page {{ size: letter; margin: 0.55in; }}
 * {{ box-sizing: border-box; }}
@@ -134,7 +134,7 @@ footer .qrwrap span {{ font-family:var(--mono); font-size:7.5px; color:var(--ink
 <div class="page">
   <header>
     <p class="kick">PNSQC 2026 &middot; Poster Handout &middot; 1 of 2</p>
-    <h1>The window is four seconds wide &mdash; and it moves.</h1>
+    <h1>Quality in the age of autonomy: deliberation costs you the bug.</h1>
     <div class="byline">
       <span><b>Lana Begunova</b> &middot; Daisy Lady Bug &middot; begunova@gmail.com</span>
       <span>AUT <b>candymapper.com</b></span>

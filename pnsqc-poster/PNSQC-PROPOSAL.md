@@ -82,18 +82,18 @@ scripts, which is the only "next step" the poster offers.
 
 ## Title
 
-**The Window Is Four Seconds Wide — and It Moves: A Bug Scripted Testing Caught 49/50 and Deliberate Testing Never Saw**
+**Quality in the Age of Autonomy: When Deliberation Costs You the Bug**
 
 Alternates:
+- The Window Is Four Seconds Wide — and It Moves: A Bug Scripted Testing Caught 49/50 and Deliberate Testing Never Saw
 - Too Slow to See It: A Four-Second Blind Spot in Autonomous Testing
-- Quality in the Age of Autonomy: When Deliberation Costs You the Bug
 - The Click That Never Lands: Measuring a Startup Race Invisible to Careful Testers
 - The Boundary Moved and the Finding Didn't: Hardening a Startup Race to n=100
 
-Ties to the 2026 theme **"Quality in the Age of Autonomy"**: most of the conversation
-around autonomous testers asks whether their *judgment* is reliable; this poster asks
-whether their *pace* determines what they can perceive at all — deliberation, usually
-framed as safer testing, here erases an entire defect class.
+Takes the 2026 theme title directly, on purpose: most of the conversation around
+autonomous testers asks whether their *judgment* is reliable; this poster asks whether
+their *pace* determines what they can perceive at all — deliberation, usually framed as
+safer testing, here erases an entire defect class.
 
 ---
 
@@ -148,15 +148,16 @@ suspected startup race.
 
 ---
 
-## Bio (94 words — shared with the Vibium AX poster)
+## Bio (99 words — no longer shared verbatim with the archived Vibium AX poster)
 
 **Lana Begunova** is an AI, UI, and API SDET with seven years in test automation and the
-founder of Daisy Lady Bug, a test automation consultancy in Seattle. She works in
-Selenium, Playwright, Appium, and WebDriver BiDi, and spends most of her research time on
-agent-driven browser automation. She is credited in the Vibium v26.5.31 release for "an
-extraordinary amount of systematic, cross-client testing," having filed 40+ defects across
-its CLI, MCP server, and JavaScript, Python, and Java clients. She publishes her
-benchmarks and methodology openly at github.com/lana-20. ISTQB CTFL, AWS CCP, CSM.
+founder of Daisy Lady Bug, a test automation consultancy in Seattle. She builds
+automation frameworks with OSS tools like Selenium WebDriver BiDi, Appium, and now
+Vibium, and spends most of her research time on agent-driven browser automation. She is
+credited in the Vibium v26.5.31 release for "an extraordinary amount of systematic,
+cross-client testing," having filed 40+ defects across its CLI, MCP server, and
+JavaScript, Python, and Java clients. She publishes her benchmarks and methodology
+openly at github.com/lana-20. ISTQB CTFL, AWS CCP, CSM.
 
 ---
 

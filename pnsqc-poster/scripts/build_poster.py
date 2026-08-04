@@ -46,7 +46,7 @@ def main():
     html = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Window Is Four Seconds Wide — candy-mapping — PNSQC 2026</title>
+<title>Quality in the Age of Autonomy — candy-mapping — PNSQC 2026</title>
 <style>
 :root {{
   --ground:#FBFBF9; --panel:#FFFFFF; --sunk:#F3F4F0;
@@ -150,9 +150,8 @@ figcaption b {{ color:var(--ink2); }}
 <div class="wrap">
 
 <p class="kicker">PNSQC 2026 &middot; Poster companion</p>
-<p class="kick">Quality in the Age of Autonomy</p>
 <p class="q">How fast do you have to be to see a bug whose hiding window keeps moving?</p>
-<h1>The window is four seconds wide.</h1>
+<h1>Quality in the age of autonomy: deliberation costs you the bug.</h1>
 <div class="byline">
   <span><b>Lana Begunova</b> &middot; Daisy Lady Bug &middot; begunova@gmail.com</span>
   <span>AUT <b>candymapper.com</b></span>
