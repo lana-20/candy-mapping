@@ -47,7 +47,7 @@ code { font-family:var(--mono); font-size:.9em; background:var(--sunk); padding:
 .fact .l { font-size:12.5px; color:var(--ink3); margin-top:4px; line-height:1.4; }
 .themebtn { position:fixed; top:14px; right:14px; z-index:10; font-family:var(--mono); font-size:11px;
   padding:6px 10px; border-radius:6px; border:1px solid var(--rule2); background:var(--panel); color:var(--ink2); cursor:pointer; }
-.nav { font-family:var(--mono); font-size:12.5px; margin-bottom:22px; }
+.nav { font-family:var(--mono); font-size:12.5px; margin-bottom:22px; display:flex; gap:18px; flex-wrap:wrap; }
 .nav a { color: var(--ink3); text-decoration: none; border-bottom: 1px solid var(--rule2); }
 footer { margin-top:30px; border-top:2px solid var(--ink); padding-top:16px; font-size:12.5px; color:var(--ink3); }
 footer a { color: var(--ink2); }
@@ -58,7 +58,8 @@ footer a { color: var(--ink2); }
 <button class="themebtn" id="themeBtn">theme</button>
 
 <div class="wrap">
-  <p class="nav"><a href="vibium-cli-flow.html">&larr; CLI call flow</a></p>
+  <p class="nav"><a href="vibium-cli-flow.html">&larr; CLI call flow</a>
+    <a href="vibium-test-case-commands.html">the 8-step test case, command by command &rarr;</a></p>
   <p class="kick">vibium internals</p>
   <h1>What happens when a vibium MCP tool call is sent</h1>
   <p class="sub">Companion to <a href="vibium-cli-flow.html">the CLI version</a> — same
@@ -142,23 +143,24 @@ sequenceDiagram
       <div class="stage"><b>The loop repeats per step, each one paying the reasoning cost again.</b>
         <p>Navigate, dismiss, fill, click, fill, click — each is its own reasoning-then-tool-call
           round trip. That accumulation, not any single slow step, is why an MCP-driven run
-          reaches the same real submit click roughly 15–25 seconds after load, against the CLI
-          arm's ~3.5–4.5 seconds for the identical sequence.</p></div>
+          reaches the same real submit click roughly 17.5–28.9 seconds after load (hardened,
+          n=50), against the CLI arm's 4.4–5.0 seconds for the identical sequence.</p></div>
     </div>
   </div>
 
   <div class="panel">
     <p class="eyebrow">What this costs, measured</p>
     <div class="factrow">
-      <div class="fact"><div class="k">14.6–24.6s</div>
-        <div class="l">arrival time at the real submit click, across 10 real runs this
-          session — vs. the CLI arm's ~3.5–4.5s for the identical 8-step task.</div></div>
-      <div class="fact"><div class="k">~$0.22–0.28</div>
-        <div class="l">actual cost per run, Claude Sonnet, well under the $0.50/run budget
-          cap this project's harness set.</div></div>
-      <div class="fact"><div class="k">35–45s</div>
-        <div class="l">total wall time per run, including all reasoning turns — not just the
-          time to reach the timed click.</div></div>
+      <div class="fact"><div class="k">17.5–28.9s</div>
+        <div class="l">arrival time at the real submit click, hardened across 50 real runs
+          (2026-08-04) — vs. the CLI arm's 4.4–5.0s for the identical 8-step task.</div></div>
+      <div class="fact"><div class="k">$11.71</div>
+        <div class="l">total real cost across all 50 runs (~$0.23/run), claude-sonnet-5, well
+          under the $0.50/run budget cap this project's harness set.</div></div>
+      <div class="fact"><div class="k">50/50</div>
+        <div class="l">runs where the negative-path assertion (step 6, the validation-error
+          check) actually confirmed — vs. 0/50 for the CLI arm, whose own precondition check
+          is fast enough to be swallowed by the same race it's testing for.</div></div>
     </div>
     <p style="font-size:13px;color:var(--ink3);margin-top:14px">
       None of this is CLI/BiDi overhead — the daemon-and-browser layer underneath costs the

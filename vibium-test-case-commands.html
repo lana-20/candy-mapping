@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The 8-step canonical test case, step by step, with the exact vibium CLI command and MCP tool call each arm actually uses — from journey_cli.sh and journey_mcp.py verbatim.">
+<title>The 8-step test case: CLI commands vs MCP tool calls</title>
+<style>
+:root {
+  --ground:#FBFBF9; --panel:#FFFFFF; --sunk:#F3F4F0;
+  --ink:#141615; --ink2:#3C413B; --ink3:#6A706A;
+  --rule:#DCDFD7; --rule2:#C3C7BC;
+  --cli:#4a3aa7; --mcp:#eb6834; --bad:#c23b3b;
+  --sans: ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono: ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --ground:#15171A; --panel:#1B1E22; --sunk:#20242A; --ink:#EDEFEA; --ink2:#C7CBC4;
+          --ink3:#8B9089; --rule:#33383E; --rule2:#454B52; --cli:#9585e0; --mcp:#f0956a; --bad:#e07a7a; }
+}
+:root[data-theme="dark"] { --ground:#15171A; --panel:#1B1E22; --sunk:#20242A; --ink:#EDEFEA; --ink2:#C7CBC4;
+  --ink3:#8B9089; --rule:#33383E; --rule2:#454B52; --cli:#9585e0; --mcp:#f0956a; --bad:#e07a7a; }
+:root[data-theme="light"] { --ground:#FBFBF9; --panel:#FFFFFF; --sunk:#F3F4F0; --ink:#141615; --ink2:#3C413B;
+  --ink3:#6A706A; --rule:#DCDFD7; --rule2:#C3C7BC; --cli:#4a3aa7; --mcp:#eb6834; --bad:#c23b3b; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 40px 22px 80px; }
+.nav { font-family:var(--mono); font-size:12.5px; margin-bottom:22px; display:flex; gap:18px; flex-wrap:wrap; }
+.nav a { color: var(--ink3); text-decoration: none; border-bottom: 1px solid var(--rule2); }
+.kick { font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink3); font-weight:700; }
+h1 { font-size: clamp(24px,3.6vw,34px); line-height:1.1; letter-spacing:-.02em; font-weight:800; margin:10px 0 10px; }
+.sub { font-size:15.5px; color:var(--ink3); max-width: 720px; margin: 0 0 28px; }
+code { font-family:var(--mono); font-size:.88em; background:var(--sunk); padding:1px 5px; border-radius:4px; color:var(--ink2); }
+.legend { display:flex; gap:24px; margin-bottom:20px; font-family:var(--mono); font-size:12.5px; }
+.legend span { display:flex; align-items:center; gap:8px; }
+.sw { width:12px; height:12px; border-radius:3px; }
+.sw.cli { background: var(--cli); } .sw.mcp { background: var(--mcp); }
+.steptable { display:flex; flex-direction:column; gap:14px; }
+.steprow { background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:18px 22px; }
+.stephead { display:flex; align-items:baseline; gap:12px; margin-bottom:12px; }
+.stepnum { font-family:var(--mono); font-size:13px; font-weight:700; color:var(--ink3);
+  border:1px solid var(--rule2); border-radius:50%; width:26px; height:26px; display:grid;
+  place-items:center; flex:0 0 auto; }
+.stepname { font-size:16px; font-weight:700; }
+.stepgrid { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+@media (max-width:760px) { .stepgrid { grid-template-columns: 1fr; } }
+.armbox { border-radius:8px; padding:12px 14px; background:var(--sunk); }
+.armlabel { font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+  font-weight:700; margin-bottom:8px; }
+.armlabel.cli { color: var(--cli); } .armlabel.mcp { color: var(--mcp); }
+.armbox pre { margin:0; font-family:var(--mono); font-size:12.5px; line-height:1.55; color:var(--ink2);
+  white-space:pre-wrap; word-break:break-word; }
+.armbox .note { margin-top:8px; font-size:12px; color:var(--ink3); line-height:1.4; }
+.timed { border-left:3px solid var(--bad); }
+.timed .armlabel::after { content:" — THE TIMED CLICK"; color: var(--bad); }
+.themebtn { position:fixed; top:14px; right:14px; z-index:10; font-family:var(--mono); font-size:11px;
+  padding:6px 10px; border-radius:6px; border:1px solid var(--rule2); background:var(--panel); color:var(--ink2); cursor:pointer; }
+footer { margin-top:30px; border-top:2px solid var(--ink); padding-top:16px; font-size:12.5px; color:var(--ink3); }
+footer a { color: var(--ink2); }
+</style>
+</head>
+<body>
+
+<button class="themebtn" id="themeBtn">theme</button>
+
+<div class="wrap">
+  <p class="nav">
+    <a href="vibium-cli-flow.html">&larr; what a CLI call does underneath</a>
+    <a href="vibium-mcp-flow.html">what an MCP tool call does underneath &rarr;</a>
+  </p>
+  <p class="kick">vibium internals · candy-mapping test case</p>
+  <h1>The 8-step test case: CLI commands vs MCP tool calls</h1>
+  <p class="sub">The canonical test case (<code>references/test-case.md</code>) run two ways. Every
+    command below is copied verbatim from <code>scripts/journey_cli.sh</code> and the prompt
+    <code>scripts/journey_mcp.py</code> sends the agent — not paraphrased, not simplified. Both
+    arms run the identical sequence of actions against the identical page; only <em>how</em> each
+    action gets issued differs.</p>
+
+  <div class="legend">
+    <span><i class="sw cli"></i> Scripted CLI — <code>journey_cli.sh</code></span>
+    <span><i class="sw mcp"></i> Agent-driven MCP — <code>journey_mcp.py</code>'s prompt</span>
+  </div>
+
+  <div class="steptable">
+
+    <div class="steprow">
+      <div class="stephead"><span class="stepnum">1</span><span class="stepname">Go to candymapper.com</span></div>
+      <div class="stepgrid">
+        <div class="armbox"><div class="armlabel cli">CLI</div><pre>vibium go "$URL"</pre></div>
+        <div class="armbox"><div class="armlabel mcp">MCP</div><pre>mcp__vibium__browser_navigate
+  {"url": "https://candymapper.com/"}</pre></div>
+      </div>
+    </div>
+
+    <div class="steprow">
+      <div class="stephead"><span class="stepnum">2</span><span class="stepname">Dismiss the Pop-Up Challenge modal</span></div>
+      <div class="stepgrid">
+        <div class="armbox"><div class="armlabel cli">CLI</div><pre>vibium wait "$DISMISS" --state visible --timeout 10000
+vibium click "$DISMISS"</pre></div>
+        <div class="armbox"><div class="armlabel mcp">MCP</div><pre>mcp__vibium__browser_wait
+  {"selector": "[id$=-close-icon]", "state": "visible"}
+mcp__vibium__browser_click
+  {"selector": "[id$=-close-icon]"}</pre></div>
+      </div>
+    </div>
+
+    <div class="steprow">
+      <div class="stephead"><span class="stepnum">3</span><span class="stepname">Scroll down to Contact Us</span></div>
+      <div class="stepgrid">
+        <div class="armbox"><div class="armlabel cli">CLI</div><pre>vibium scroll into-view 'input[data-aid="First Name"]'</pre>
+          <div class="note">Section heading has no stable selector — scrolls the form's own First Name field into view instead (see <code>references/selectors.md</code>).</div></div>
+        <div class="armbox"><div class="armlabel mcp">MCP</div><pre>mcp__vibium__browser_scroll_into_view
+  {"selector": "input[data-aid=\"First Name\"]"}</pre></div>
+      </div>
+    </div>
+
+    <div class="steprow">
+      <div class="stephead"><span class="stepnum">4</span><span class="stepname">Fill in first and last name</span></div>
+      <div class="stepgrid">
+        <div class="armbox"><div class="armlabel cli">CLI</div><pre>vibium fill 'input[data-aid="First Name"]' "Test"
+vibium fill 'input[data-aid="Last Name"]' "Testerson"</pre></div>
+        <div class="armbox"><div class="armlabel mcp">MCP</div><pre>mcp__vibium__browser_fill
+  {"selector": "input[data-aid=\"First Name\"]", "text": "Test"}
+mcp__vibium__browser_fill
+  {"selector": "input[data-aid=\"Last Name\"]", "text": "Testerson"}</pre></div>
+      </div>
+    </div>
+
+    <div class="steprow">
+      <div class="stephead"><span class="stepnum">5</span><span class="stepname">Submit without the mandatory email</span></div>
+      <div class="stepgrid">
+        <div class="armbox"><div class="armlabel cli">CLI</div><pre>vibium click "$ACTION"</pre>
+          <div class="note">Not the timed click — this one is itself subject to the same startup race, and usually loses to it (see step 6).</div></div>
+        <div class="armbox"><div class="armlabel mcp">MCP</div><pre>mcp__vibium__browser_click
+  {"selector": "button[data-aid=\"CONTACT_SUBMIT_BUTTON_REND\"]"}</pre></div>
+      </div>
+    </div>
+
+    <div class="steprow">
+      <div class="stephead"><span class="stepnum">6</span><span class="stepname">Verify error "Please enter a valid email address."</span></div>
+      <div class="stepgrid">
+        <div class="armbox"><div class="armlabel cli">CLI</div><pre>vibium wait text "$VALIDATION_TEXT" --timeout 800</pre>
+          <div class="note">Bounded, non-fatal — a long wait here would force the run past the same window step 8 needs to land inside. Confirmed 2026-08-04: reads <code>false</code> 0/50 times (the click was raced).</div></div>
+        <div class="armbox"><div class="armlabel mcp">MCP</div><pre>mcp__vibium__browser_evaluate
+  {"expression": "document.body.innerText.includes(
+     \"Please enter a valid email address\")"}</pre>
+          <div class="note">Unconditional, no timeout — the agent's own reasoning time already carries it past the window. Confirmed: reads <code>true</code> 50/50 times.</div></div>
+      </div>
+    </div>
+
+    <div class="steprow">
+      <div class="stephead"><span class="stepnum">7</span><span class="stepname">Fill in email</span></div>
+      <div class="stepgrid">
+        <div class="armbox"><div class="armlabel cli">CLI</div><pre>vibium fill 'input[data-aid="CONTACT_FORM_EMAIL"]' \
+  "test@example.invalid"
+vibium value 'input[data-aid="CONTACT_FORM_EMAIL"]'</pre>
+          <div class="note">Read-back verified — a mismatch logs <code>precondition_failed</code> and skips the run rather than reporting a fake timing result.</div></div>
+        <div class="armbox"><div class="armlabel mcp">MCP</div><pre>mcp__vibium__browser_fill
+  {"selector": "input[data-aid=\"CONTACT_FORM_EMAIL\"]",
+   "text": "test@example.invalid"}</pre></div>
+      </div>
+    </div>
+
+    <div class="steprow">
+      <div class="stephead"><span class="stepnum">8</span><span class="stepname">Submit again — verify success message</span></div>
+      <div class="stepgrid">
+        <div class="armbox"><div class="armlabel cli">CLI</div>
+          <div class="armbox timed" style="margin-bottom:10px">
+            <div class="armlabel cli">CLI</div>
+<pre>vibium eval '(arm MutationObserver on success text)'
+vibium eval "(()=>{const t=Math.round(performance.now());
+  document.querySelector('$ACTION').click();return t})()"</pre>
+          </div>
+<pre>vibium sleep 3000
+vibium eval '(read window.__hit / success text -> "worked"|"SWALLOWED")'</pre>
+          <div class="note">Timestamp-read and click fire in the <em>same</em> eval call — no inter-process gap between "the time recorded" and "the click that fired" (see <code>timing-methodology.md</code>).</div></div>
+        <div class="armbox"><div class="armlabel mcp">MCP</div>
+          <div class="armbox timed" style="margin-bottom:10px">
+            <div class="armlabel mcp">MCP</div>
+<pre>mcp__vibium__browser_evaluate  (arm MutationObserver)
+mcp__vibium__browser_click
+  {"selector": "button[data-aid=\"CONTACT_SUBMIT_BUTTON_REND\"]"}</pre>
+          </div>
+<pre>mcp__vibium__browser_sleep  {"ms": 3000}
+mcp__vibium__browser_evaluate  (read result -> "worked"|"SWALLOWED")</pre>
+          <div class="note">Arrival time derived from the transcript's own tool-call timestamps (navigate &rarr; this click), not agent self-report.</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    Every command above is copied verbatim from
+    <a href="https://github.com/lana-20/candy-mapping/blob/main/scripts/journey_cli.sh"><code>scripts/journey_cli.sh</code></a>
+    and the prompt in
+    <a href="https://github.com/lana-20/candy-mapping/blob/main/scripts/journey_mcp.py"><code>scripts/journey_mcp.py</code></a>,
+    2026-08-04. Full canonical step list: <code>references/test-case.md</code>. Hardened results
+    (n=50 each): <code>references/timing-methodology.md</code>.
+  </footer>
+</div>
+
+<script>
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const r = document.documentElement;
+  const cur = r.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  r.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+});
+</script>
+</body>
+</html>
