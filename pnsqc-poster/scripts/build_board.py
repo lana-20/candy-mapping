@@ -304,7 +304,7 @@ after click 2 &rarr; listener=2  xhr=["POST .../v3/messages"]</pre>
   </div>
 </div>
 
-<div class="cols grow">
+<div class="cols grow" style="grid-template-columns:repeat(2,1fr)">
   <div class="stack">
     <div class="panel">
       <p class="eyebrow">Result &mdash; the comparison</p>
