@@ -1,0 +1,64 @@
+{
+  "bisect": [
+    {"ms": 2788,  "result": "swallowed"},
+    {"ms": 2866,  "result": "swallowed"},
+    {"ms": 2869,  "result": "swallowed"},
+    {"ms": 3687,  "result": "swallowed"},
+    {"ms": 3688,  "result": "swallowed"},
+    {"ms": 4199,  "result": "worked"},
+    {"ms": 4268,  "result": "worked"},
+    {"ms": 7200,  "result": "worked"},
+    {"ms": 11858, "result": "worked"},
+    {"ms": 22364, "result": "worked"}
+  ],
+  "boundary": {"discard_ms": 3687, "success_ms": 4199, "window_lo": 3.7, "window_hi": 4.2},
+  "boundary_note": "The boundary is not a fixed constant — re-bisected 2026-08-04 in the same session and found it had already moved (discard confirmed up to 6,054ms, ~2s later than the figure above, with zero prior interaction). Quote a range measured close to publication time, not this snapshot, as exact.",
+  "runs": {
+    "cli":  {"label": "Scripted CLI", "arrival_s": 1,  "hits": 30, "total": 30},
+    "mcp":  {"label": "Agent-driven MCP", "arrival_s": 25, "hits": 0, "total": 30}
+  },
+  "hardening": {
+    "date": "2026-08-04",
+    "model": "claude-sonnet-5",
+    "note": "50 CLI + 50 MCP runs of the full 8-step canonical journey (scroll, fill, submit w/o email, verify validation error, fill email, submit again). Independent of the original 60-run benchmark above — different date, different (fuller) step sequence, boundary had drifted by this point.",
+    "cli":  {"label": "Scripted CLI", "n": 50, "swallowed": 49, "worked": 0, "precondition_failed": 1,
+             "arrival_ms": {"min": 4430, "max": 5042, "median": 4684, "mean": 4701},
+             "validation_confirmed": 0},
+    "mcp":  {"label": "Agent-driven MCP", "n": 50, "swallowed": 0, "worked": 50,
+             "arrival_ms": {"min": 17480, "max": 28881, "median": 21330, "mean": 21856},
+             "validation_confirmed": 50, "cost_usd": 11.71}
+  },
+  "attribute": {
+    "click1": {"listener": 1, "network": [], "message": false},
+    "click2": {"listener": 2, "network": ["POST .../v3/messages"], "message": true}
+  },
+  "sessions": 3,
+  "runs_total": 60,
+  "steps_total": 480,
+  "date": "2026-07-27",
+  "grid": {
+    "credit": "Paul Grossman, CandyMapper Challenge 2026 Build & Run Speed Grid",
+    "tools": [
+      {"n": "ContextQA",        "b": 1.23,  "r": 65},
+      {"n": "Audify Aximo",     "b": 3,     "r": 100},
+      {"n": "Twin",             "b": 6,     "r": 120},
+      {"n": "Functionize",      "b": 9,     "r": 112},
+      {"n": "Harness",          "b": 11.77, "r": 59},
+      {"n": "Thunders.AI",      "b": 16,    "r": 105},
+      {"n": "Wopee.ai",         "b": 23,    "r": 113},
+      {"n": "Autonomous",       "b": 3,     "r": 36},
+      {"n": "Bling.io",         "b": 3.33,  "r": 27},
+      {"n": "BugBug",           "b": 1.87,  "r": 18},
+      {"n": "testRigor",        "b": 5,     "r": 21},
+      {"n": "Tricentis Testim", "b": 7,     "r": 26},
+      {"n": "Accelq",           "b": 8,     "r": 34,  "dy": 4,   "ax": "end", "dx": -9},
+      {"n": "Kane.ai",          "b": 22,    "r": 35,  "dy": -11},
+      {"n": "Inflectra Rapise", "b": 23,    "r": 29,  "dy": 4,   "ax": "end", "dx": -9},
+      {"n": "ZAPtest",          "b": 23,    "r": 23,  "dy": -11}
+    ],
+    "mine": [
+      {"n": "Vibium CLI", "b": 8.6,  "r": 8.92,  "lo": 8.92,  "hi": 11.05, "series": "cli", "sub": "8.6m build / 8.9s run", "dy": -13, "ax": "end", "dx": 9},
+      {"n": "Vibium MCP", "b": 0.25, "r": 49.45, "lo": 49.45, "hi": 69.35, "series": "mcp", "sub": "no build / 49.5s run", "dy": 38, "ax": "middle", "dx": -34}
+    ]
+  }
+}
