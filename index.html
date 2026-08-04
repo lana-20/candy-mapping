@@ -655,6 +655,32 @@ click at t+22364ms after load → <span class="g">worked</span></pre>
     </p>
   </div>
 
+  <div class="aside" style="margin-top: 34px;">
+    <p><strong>Update, August 4 2026 — hardened to 100 runs.</strong> Reran the same eight-step
+      journey independently: 50 scripted-CLI runs and 50 agent-driven-MCP runs, a separate day,
+      the fuller canonical sequence (including an explicit assertion on the validation-error step,
+      which the original run never checked programmatically). The finding held — 49 of 50 CLI runs
+      hit the bug, 50 of 50 MCP runs avoided it — but the margin moved. CLI's median arrival rose to
+      about 4.7 seconds (from about 1 originally), landing much closer to the boundary; MCP's stayed
+      close to 21 seconds. The 25× arrival gap first published above is closer to 4.6× comparing
+      hardened medians.</p>
+    <p>The boundary itself moved too. Re-bisected in the same 2026-08-04 session, roughly 30
+      minutes after confirming success at 4,199ms, a plain click with no prior interaction was
+      still swallowed at 6,054ms. The window drifts within a single session, not only session to
+      session — treat any published bracket as a snapshot of the moment it was measured, not a
+      constant to check new data against later.</p>
+    <p>A second race turned up along the way: the validation-error click (submitting with no
+      email) is itself subject to the identical startup race. The CLI's own attempt at it is fast
+      enough to be swallowed too — confirmed <em>false</em> 0 of 50 times. The MCP agent's
+      reasoning time carries it past the window by then — confirmed <em>true</em> 50 of 50 times.
+      Even a test's own precondition check can be the thing the bug hides from.</p>
+    <p>Full numbers, cost, and the two harness bugs the hardening pass itself surfaced:
+      <a href="references/timing-methodology.md">references/timing-methodology.md</a>. Exact step
+      sequence and the real CLI command / MCP tool call issued at each step:
+      <a href="references/test-case.md">references/test-case.md</a> and
+      <a href="vibium-test-case-commands.html">vibium-test-case-commands.html</a>.</p>
+  </div>
+
 </article>
 
 <script>

@@ -55,22 +55,36 @@ listener never fires, the click missed the element and your locator is wrong —
 
 ## What it found
 
-On the reference target, the window is **3.7–4.2 seconds** after page load, and the boundary is
-sharp: a click at 3,687ms is discarded, one at 4,199ms goes through, reproducing on both sides.
+On the reference target, the window was originally measured at **3.7–4.2 seconds** after page
+load — a click at 3,687ms discarded, one at 4,199ms through, reproducing on both sides. Hardened
+2026-08-04: the boundary **drifts within a single session**, not just session to session — a
+re-bisection ~30 minutes later found a zero-interaction control click still swallowed at 6,054ms.
+Treat any published window as a snapshot, not a constant — see
+[`references/timing-methodology.md`](references/timing-methodology.md).
 
-Across sixty benchmark runs the same eight steps were driven two ways:
+Across sixty original benchmark runs the same eight steps were driven two ways, hardened
+2026-08-04 to 100 independent runs of the full canonical journey:
 
-| Driver | Reaches the action | Hit the bug |
-|---|---|---|
-| Scripted CLI | ~1s after filling | **30 / 30** |
-| Agent-driven MCP | ~25s after filling | **0 / 30** |
+| Driver | Reaches the action | Hit the bug (original, n=30) | Hit the bug (hardened, n=50) |
+|---|---|---|---|
+| Scripted CLI | ~1s originally, ~4.7s hardened median | **30 / 30** | **49 / 50** |
+| Agent-driven MCP | ~25s originally, ~21.3s hardened median | **0 / 30** | **50 / 50** |
 
 Same site, same selectors, same browser engine. Only arrival time differs — which is why a human
 moving a mouse never sees it, and why the defect selects for your fastest users, the ones whose
-browser autofills the form.
+browser autofills the form. The arrival-time *gap* shrank under harder replication (original ~25×,
+hardened medians ~4.6×) even as the finding itself held — see
+[`references/test-case.md`](references/test-case.md) for the exact 8-step sequence both arms now
+run, and [`references/timing-methodology.md`](references/timing-methodology.md) for the full
+hardened numbers, cost ($11.71, MCP arm), and two harness bugs the hardening pass caught along the
+way.
 
 The full write-up is [`index.html`](index.html) — read it at
-**[lana-20.github.io/candy-mapping](https://lana-20.github.io/candy-mapping/)**.
+**[lana-20.github.io/candy-mapping](https://lana-20.github.io/candy-mapping/)**. Companion
+diagrams tracing what a CLI call and an MCP tool call actually do underneath:
+[`vibium-cli-flow.html`](vibium-cli-flow.html) /
+[`vibium-mcp-flow.html`](vibium-mcp-flow.html) — and the real command issued at each of the
+8 canonical steps, side by side: [`vibium-test-case-commands.html`](vibium-test-case-commands.html).
 
 ## Safety
 
@@ -82,13 +96,22 @@ The full write-up is [`index.html`](index.html) — read it at
 ## Layout
 
 ```
-SKILL.md                  frontmatter, process steps, safety boundaries, output spec
-scripts/config.sh         target definition — the only file you edit
-scripts/probe.sh          one attempt at a chosen delay → SWALLOWED | worked
-scripts/bisect.sh         sweeps and narrows to the boundary bracket
-scripts/attribute.sh      capture-phase listener + network hook: site vs tool
-references/methodology.md locator strategy, failure modes, reporting standards
-index.html                the article this came out of
+SKILL.md                          frontmatter, process steps, safety boundaries, output spec
+scripts/config.sh                 target definition — the only file you edit
+scripts/probe.sh                  one attempt at a chosen delay → SWALLOWED | worked
+scripts/bisect.sh                 sweeps and narrows to the boundary bracket
+scripts/attribute.sh              capture-phase listener + network hook: site vs tool
+scripts/journey_cli.sh            full 8-step canonical journey, scripted (n-run batches)
+scripts/journey_mcp.py            full 8-step canonical journey, agent-driven via MCP
+references/methodology.md         locator strategy, failure modes, reporting standards
+references/timing-methodology.md  the clock mechanism, its precision limits, the hardening pass
+references/test-case.md           the exact 8-step canonical sequence, verbatim
+references/selectors.md           full CandyMapper contact-form field map
+references/session-isolation.md   CLI vs MCP concurrency: verified no state leak
+data/runs/                        raw per-run JSON + transcripts from the hardening pass
+index.html                        the article this came out of
+vibium-cli-flow.html              diagram: what a CLI call does underneath
+vibium-mcp-flow.html              diagram: what an MCP tool call does underneath
 ```
 
 ## Credit
