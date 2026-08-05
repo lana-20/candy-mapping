@@ -62,6 +62,17 @@ result, decides the next tool call, then calls it — so the gap is 8 stacked re
 turns, not one slow step. See `references/timing-methodology.md` and
 `vibium-mcp-flow.html` (traces one such turn stage by stage) in the main repo.
 
+**Robustness check: does optimizing MCP close the gap?** (poster/methods framing, not
+for the abstract's word budget). A separate, sibling investigation
+(`~/vibium-efficiency`) asked whether the arrival gap is a property of MCP itself or
+just of an un-optimized agent, and hardened a real answer: batching the journey's
+independent tool calls into fewer reasoning turns (n=50 runs, not a demonstration) cuts
+MCP's median arrival from ~22.0s to ~17.3s — a genuine ~25–27% speedup, with each
+batched call still individually verified, not collapsed into an unverified shortcut.
+It still misses the 3.7–4.4s window by roughly 4×. Speed isn't the fix; the finding
+survives real optimization, not just the un-optimized baseline this poster otherwise
+reports.
+
 **The boundary is not fixed.** Re-bisected properly (multiple probes, not one click) twice
 more in the same 2026-08-04 session: 3,941→4,252ms after ~45 minutes, 4,095→4,393ms after
 ~90 minutes — a consistent ~150–250ms creep each time. The window drifts within a single
@@ -188,3 +199,8 @@ Screenshot-verified in-browser 2026-08-04.
       being submitted, so there's nothing left to keep in sync.
 - [x] Decided not to disclose or track the hardening's real run cost anywhere published —
       it's an artifact of this account's usage, not a property of the finding.
+- [ ] New 2026-08-05: added a "robustness check" paragraph citing `vibium-efficiency`'s
+      hardened n=50 batched-MCP result (~17.3s median, still ~4× outside the window).
+      Not yet reflected in the poster board/companion HTML or the abstract — decide
+      whether this belongs in the printed poster itself (a footnote-sized addition) or
+      stays proposal-only as talking-point backup for reviewer/easel questions.

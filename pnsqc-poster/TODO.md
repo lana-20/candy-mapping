@@ -4,16 +4,58 @@ Resume point for what's left before this goes in. `PNSQC-PROPOSAL.md`'s own "Bef
 submitting — open items" checklist is fully checked off (2026-08-04) — everything below
 is what's left *after* that, not a duplicate of it.
 
-## Not yet done
+## Poster optimization plan (2026-08-05) — priority order, with time estimates
 
-- [ ] **Check the poster board against the official PNSQC template.** The sibling
-      Vibium AX proposal (`~/pnsqc-2026-poster/references/PNSQC-PROPOSAL.md`, archived)
-      did this — trim size, banner/logo placement, content margins, section-order
-      deviation (conclusions-first vs. the template's Abstract → Intro → Approach →
-      Conclusion) — and documented it as a "confirm with the committee" open point.
-      Candy-mapping's `poster-board.html` was built the same way (same brand assets,
-      same layout system) but was never checked against
-      `PNSQC-2026-Poster-Template-Portrait.pptx` explicitly. Do that before printing.
+Prompted by adding a "robustness check" paragraph to `PNSQC-PROPOSAL.md` citing
+`vibium-efficiency`'s hardened n=50 batched-MCP result (~17.3s median, still ~4× outside
+the window). That addition is proposal-text only so far — nothing below assumes it's
+decided to go on the printed board; item 1 is that decision itself.
+
+1. **Decide + (if yes) implement the robustness-check addition on the printed
+   artifacts** — ~20 min to decide, ~30–40 min to implement if yes.
+   - Decide: does "even optimized MCP misses by ~4×" earn poster-board space, or stay
+     proposal-only as reviewer/easel backup? Leans toward **footnote-only, not a new
+     poster panel** — the poster's own positioning rules (one clean two-minute repro, no
+     extra angles) argue against a second dataset competing for attention with the
+     headline 69/70 vs 70/70 split. A single small caption under the MCP arrival stat
+     ("batched: ~17.3s, n=50 — still outside") is the max scope worth considering.
+   - If yes: add a `"mcp_optimized"` key to `assets/poster_data.json` (n=50, median
+     17,254ms, mean 18,007ms, stdev 2,920ms — pulled from
+     `~/vibium-efficiency/data/runs/mcp_batched/`) and wire a small caption/footnote into
+     `poster-board.html` and `poster.html` near the existing MCP arrival stat. Re-run
+     `scripts/build_handout.py`-equivalent regeneration if the board is templated from
+     the JSON (check how `poster-board.html` currently consumes `poster_data.json` before
+     assuming a rebuild step exists).
+   - If no: cross this off, leave the proposal paragraph as-is (already done), done.
+2. **Check the poster board against the official PNSQC template** — ~30–45 min.
+   (Carried over from below — resequenced to before the print test, since a template
+   mismatch found here could change margins/layout the print test would otherwise have
+   to redo.) Trim size, banner/logo placement, content margins, section-order deviation
+   (this poster is conclusions-first vs. the template's Abstract → Intro → Approach →
+   Conclusion) against `~/Desktop/PNSQC-2026-Poster-Template-Landscape.pptx` /
+   `-Portrait.pptx`. The sibling archived Vibium AX proposal already did this once — reuse
+   its checklist/approach if still findable in `~/pnsqc-2026-poster/references/PNSQC-PROPOSAL.md`
+   rather than re-deriving from scratch.
+3. **Print test — manual Chrome, not `vibium pdf`** — ~15–20 min. `vibium pdf` is
+   confirmed unusable for this (ignores `@page` CSS, always emits Letter — see
+   `feedback_vibium_pdf_page_size.md` in memory). File → Print → Save as PDF → pick A0 by
+   hand for `poster-board.html`, Letter for `handout.html` → margins None → background
+   graphics ON → verify the resulting PDF's actual page size. Do this *after* item 2, in
+   case the template check changes the board's dimensions.
+4. **Actually submit** — ~15 min of form-filling, assuming items 1–3 are settled and
+   nothing they surface requires more poster-content changes. Title, abstract (499
+   words), bio, optional sketch, handout, submitted at
+   pnsqc.org/conference/2026/poster/. Deadline rolling, closes when spots fill or
+   Sept 22, 2026 — no reason to rush ahead of items 1–3, since a template mismatch or a
+   late decision to add the robustness caption is far cheaper to fix before submission
+   than after.
+
+**Total: ~2–2.5 hours** across all four, dominated by item 2 (template check) and the
+implementation half of item 1 if that's the decision — items 3 and 4 are quick once the
+content is settled.
+
+## Already done, folded out of the active sequence above
+
 - [x] **Write the handout** (1–2 pages, due with the first poster draft, Sept 28) —
       `scripts/build_handout.py` → `assets/handout.html`, 2 US Letter pages. Page 1: the
       window-drift finding as the worked example (original 10-probe timeline SVG +
@@ -24,18 +66,9 @@ is what's left *after* that, not a duplicate of it.
       reviewer, and a QR code (`assets/qr-repo.svg`, pre-generated with the `qrcode`
       python package, not a build-time dependency) to github.com/lana-20/candy-mapping.
       Screenshot-verified 2026-08-04.
-- [ ] **Actually submit** — title, abstract (now 499 words), bio, optional sketch,
-      handout — to the PNSQC program committee (pnsqc.org/conference/2026/poster/).
-      Deadline rolling, closes when spots fill or Sept 22, 2026.
-- [ ] **Print test — genuinely not done, and `vibium pdf` cannot do it.** Tried
-      `vibium pdf` against both `poster-board.html` (should be 841×1189mm/A0) and
-      `handout.html` (should be 2× Letter) — **it ignores the page's own `@page` CSS
-      entirely and always emits Letter (612×792pt) regardless of what's declared.** The
-      handout "passed" only by coincidence (its `@page` already says `letter`); the board
-      test proves the tool can't validate A0 at all. Real verification requires manual
-      Chrome: File → Print → Save as PDF → pick the paper size by hand (A0 for the board,
-      Letter for the handout) → margins None → background graphics ON, then check the
-      resulting PDF's actual page size. Not yet done for either file.
+
+(The template check, print test, and submission steps are now items 2–4 in the
+sequenced plan above — not repeated here to avoid two copies drifting out of sync.)
 
 ## Housekeeping
 
