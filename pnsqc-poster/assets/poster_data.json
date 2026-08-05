@@ -28,6 +28,16 @@
              "arrival_ms": {"min": 17480, "max": 30134, "median": 21986, "mean": 22588},
              "validation_confirmed": 70}
   },
+  "mcp_optimized": {
+    "source": "sibling investigation, ~/vibium-efficiency",
+    "date": "2026-08-05",
+    "note": "Robustness check: does optimizing MCP close the arrival gap? Batches the journey's independent tool calls into fewer reasoning turns, each batched call still individually verified. n=50, still misses the 3.7-4.4s window by roughly 4x — speed isn't the fix.",
+    "n": 50,
+    "arrival_ms": {"min": 13855, "max": 26216, "median": 17254, "mean": 18007, "stdev": 2920},
+    "vs_unbatched_median_ms": 21986,
+    "speedup_pct_lo": 25,
+    "speedup_pct_hi": 27
+  },
   "attribute": {
     "click1": {"listener": 1, "network": [], "message": false},
     "click2": {"listener": 2, "network": ["POST .../v3/messages"], "message": true}
