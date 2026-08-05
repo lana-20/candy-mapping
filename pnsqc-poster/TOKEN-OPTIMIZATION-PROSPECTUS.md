@@ -34,17 +34,27 @@ command) cuts marginal per-call cost by ~50–100× once warm, in a real measure
 window on 69/70 hardened runs; making it faster only pushes it further inside a
 window it already reaches.
 
-**MCP side, per call:** reasoning turns, not the browser or daemon, is the
-bottleneck — both arms pay the same ~170–250ms per real action. Hand-rolling batched
-`browser_evaluate` calls (collapsing several steps into one JS blob) measured a real
-~1.4× speedup (n=20 real runs) but **produced a real correctness bug**: a "verify the
-click happened" field that turned out to be a hardcoded `true` literal, not a real
-check — caught and fixed mid-investigation, not before it was first trusted. Even
-the *fixed*, verified version of batching only gets MCP arrival to ~15s — still
-~3.5× outside the window. An off-the-shelf MCP proxy (callmux) that batches turns
-while keeping each downstream tool call individually real and verified looks like a
-more promising architecture than hand-rolled JS, but is completely untested against
-Vibium specifically.
+**MCP side, per call: reasoning turns, not the browser or daemon, is the
+bottleneck — now measured directly, not just inferred.** A later pass split
+`tool_use`→`tool_result` (real browser/MCP round-trip time) from `tool_result`→next-
+`tool_use` (model reasoning time) across this project's own n=70 real transcripts
+(same dataset behind the poster's race-window finding). **Inside the exact
+nav→timed-submit arrival window that decides whether an MCP agent's click lands
+inside or outside the 3.7–4.4s race window: only 13.9% of that time (~3.1s median) is
+real browser/MCP work — 86.1% (~19.1s median) is Claude thinking between calls.**
+That's the same "~170–250ms per real action" claim as before, but as a measured
+percentage of the window that actually matters, not an average per-call estimate.
+Full method and data: `vibium-efficiency/references/model-vs-browser-wait-split.md`.
+
+Hand-rolling batched `browser_evaluate` calls (collapsing several steps into one JS
+blob) measured a real ~1.4× speedup (n=20 real runs) but **produced a real
+correctness bug**: a "verify the click happened" field that turned out to be a
+hardcoded `true` literal, not a real check — caught and fixed mid-investigation, not
+before it was first trusted. Even the *fixed*, verified version of batching only gets
+MCP arrival to ~15s — still ~3.5× outside the window. An off-the-shelf MCP proxy
+(callmux) that batches turns while keeping each downstream tool call individually real
+and verified looks like a more promising architecture than hand-rolled JS, but is
+completely untested against Vibium specifically.
 
 **MCP side, static (just having 85 tools connected):** turns out to be a
 non-problem. Real measurement (confirmed twice): Vibium's full MCP tool surface
@@ -58,11 +68,12 @@ bloat) turned out to be the one that wasn't real here.
 
 ## The actual prospectus: what would be worth pitching, if this became real work
 
-1. **The headline number, if this ever got built out properly:** "MCP agent overhead
-   is dominated by turn count, not model intelligence or browser cost — and the
-   cheapest way to cut it (collapsing steps into raw JS) is also the way most likely
-   to quietly break verification. A safer path exists (proxy-level batching that
-   keeps each tool call real) but is unproven." That's a genuinely interesting
+1. **The headline number, if this ever got built out properly:** "Inside the exact
+   window that decides whether an MCP agent catches or misses this bug class, 86% of
+   the time is Claude thinking — only 14% is Vibium or the browser doing anything.
+   The cheapest way to cut that (collapsing steps into raw JS) is also the way most
+   likely to quietly break verification. A safer path exists (proxy-level batching
+   that keeps each tool call real) but is unproven." That's a genuinely interesting
    claim for an audience thinking about agent cost at scale, and it's grounded in
    the same verify-everything discipline this poster already demonstrates elsewhere
    (the drift-claim correction, the `bisect.sh` exit-code bug).
