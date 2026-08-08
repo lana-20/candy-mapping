@@ -18,8 +18,9 @@ set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/.." && pwd)"
 source "$HERE/config.sh"
+source "$HERE/resolve_native_binary.sh"
 
-V="${VIBIUM:-vibium}"
+V="${VIBIUM:-$VIBIUM_NATIVE}"
 N="${1:-50}"
 OUT="$ROOT/data/runs/cli"
 mkdir -p "$OUT"

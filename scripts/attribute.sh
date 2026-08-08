@@ -5,7 +5,8 @@ set -uo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 source "$HERE/config.sh"
-V="${VIBIUM:-vibium}"
+source "$HERE/resolve_native_binary.sh"
+V="${VIBIUM:-$VIBIUM_NATIVE}"
 
 [ "$COLD_CACHE" = "1" ] && $V cookies clear >/dev/null
 $V go "$URL" >/dev/null
